@@ -35,7 +35,7 @@ if (Debugger.IsAttached)
 }
 else
 {
-    app.UseSpaStaticFiles();
+    app.MapFallbackToFile("index.html");
 }
 
 app.Run();
