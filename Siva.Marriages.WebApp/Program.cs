@@ -1,11 +1,20 @@
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Siva.Marriages.WebApp.Helpers;
 using System.Diagnostics;
+using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAppServices();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ContractResolver = new DefaultContractResolver
+    {
+        NamingStrategy = new DefaultNamingStrategy()
+    };
+});
 
 var app = builder.Build();
 
