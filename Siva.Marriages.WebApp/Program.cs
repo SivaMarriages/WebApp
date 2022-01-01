@@ -1,27 +1,8 @@
-global using Newtonsoft.Json;
-global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.EntityFrameworkCore;
-global using Npgsql;
-global using Siva.Marriages.Business;
-global using Siva.Marriages.Business.Models;
-global using Siva.Marriages.Business.DB;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
-using Siva.Marriages.WebApp.Helpers;
-using System.Diagnostics;
-using Newtonsoft.Json.Serialization;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAppServices(builder.Configuration);
 
-builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
-{
-    options.SerializerSettings.ContractResolver = new DefaultContractResolver
-    {
-        NamingStrategy = new DefaultNamingStrategy()
-    };
-});
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -37,17 +18,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 
-if (Debugger.IsAttached)
-{
-    app.UseSpa(builder =>
-    {
-        builder.Options.SourcePath = "ClientApp";
-        builder.UseAngularCliServer(npmScript: "start");
-    });
-}
-else
-{
-    app.MapFallbackToFile("index.html");
-}
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
+
+app.MapFallbackToFile("index.html"); ;
 
 app.Run();
