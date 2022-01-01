@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace Siva.Marriages.Business.Models
 {
-    public class Profile : BaseProfile
+    public class Profile
     {
         public Guid Id { get; set; }
+        public ProfileData? Data { get; set; }
+    }
+
+    public class ProfileData : BaseProfile
+    {
         public string? Surname { get; set; } = null;
         public string? MotherMaidenname { get; set; } = null;
         public BirthDetails? DateOfBirth { get; set; } = null;

@@ -1,3 +1,10 @@
+global using Newtonsoft.Json;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using Npgsql;
+global using Siva.Marriages.Business;
+global using Siva.Marriages.Business.Models;
+global using Siva.Marriages.Business.DB;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Siva.Marriages.WebApp.Helpers;
 using System.Diagnostics;
@@ -6,7 +13,7 @@ using Newtonsoft.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAppServices();
+builder.Services.AddAppServices(builder.Configuration);
 
 builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
 {
@@ -29,10 +36,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
 
 if (Debugger.IsAttached)
 {

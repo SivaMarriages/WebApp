@@ -2,28 +2,22 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Siva.Marriages.Business.DB.Models;
 
-namespace Siva.Marriages.Business.DB.Models
+namespace Siva.Marriages.Business.DB
 {
-    public partial class d6n6sf3t35jdc8Context : DbContext
+    public partial class PGSqlDbContext : DbContext
     {
-        public d6n6sf3t35jdc8Context()
+        public PGSqlDbContext()
         {
         }
 
-        public d6n6sf3t35jdc8Context(DbContextOptions<d6n6sf3t35jdc8Context> options)
+        public PGSqlDbContext(DbContextOptions<PGSqlDbContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<Profile> Profiles { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-            }
-        }
+        public virtual DbSet<Profile> Profiles { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,7 +30,6 @@ namespace Siva.Marriages.Business.DB.Models
                     .HasColumnName("id");
 
                 entity.Property(e => e.Json)
-                    .IsRequired()
                     .HasColumnType("json")
                     .HasColumnName("json");
             });

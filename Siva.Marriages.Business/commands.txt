@@ -1,0 +1,1 @@
+﻿dotnet ef dbcontext scaffold "Host=******;Database=***;Username=****;Password=***" Npgsql.EntityFrameworkCore.PostgreSQL -o DB/Models --context-dir DB --context PGSqlDbContext -f --project Siva.Marriages.Business

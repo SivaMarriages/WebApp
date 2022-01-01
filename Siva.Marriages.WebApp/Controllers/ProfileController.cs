@@ -1,44 +1,71 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Siva.Marriages.Business.Models;
-
+﻿
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Siva.Marriages.WebApp.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        // GET: api/<ProfileController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly PGSqlDbContext dbContext;
+        public ProfileController(PGSqlDbContext dbContext)
         {
-            return new string[] { "value1", "value2" };
+            this.dbContext = dbContext;
+        }
+
+        // GET: api/<ProfileController>
+        [HttpGet("api/[controller]")]
+        public async Task<IEnumerable<Profile>> Get()
+        {
+            return await dbContext.Profiles.Select(p => new Profile() { Id = p.Id, Data = JsonConvert.DeserializeObject<ProfileData>(p.Json) }).ToListAsync();
         }
 
         // GET api/<ProfileController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("api/[controller]/{id}")]
+        public async Task<IActionResult> Get(Guid id)
         {
-            return "value";
+            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == id);
+            if(dbProfile == default)
+            {
+                return NotFound("Profile Not Found!");
+            }
+            return Ok(new Profile() { Id = dbProfile.Id, Data = JsonConvert.DeserializeObject<ProfileData>(dbProfile.Json) });
         }
 
         // POST api/<ProfileController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("api/[controller]")]
+        public async Task<IActionResult> Post([FromBody] ProfileData value)
         {
+            dbContext.Add(new Business.DB.Models.Profile() { Id = Guid.NewGuid(), Json = JsonConvert.SerializeObject(value)});
+            await dbContext.SaveChangesAsync();
+            return Ok("Saved!");
         }
 
         // PUT api/<ProfileController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("api/[controller]/{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] ProfileData value)
         {
+            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == id);
+            if (dbProfile == default)
+            {
+                return NotFound("Profile Not Found!");
+            }
+            dbProfile.Json = JsonConvert.SerializeObject(value);
+            await dbContext.SaveChangesAsync();
+            return Ok("Updated!");
         }
 
         // DELETE api/<ProfileController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("api/[controller]/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
+            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == id);
+            if (dbProfile == default)
+            {
+                return NotFound("Profile Not Found!");
+            }
+            dbContext.Profiles.Remove(dbProfile);
+            await dbContext.SaveChangesAsync();
+            return Ok("Deleted!");
         }
     }
 }
