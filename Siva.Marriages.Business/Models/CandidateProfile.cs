@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Siva.Marriages.Business.Models
 {
-    public class Profile
+    public class CandidateProfile
     {
         public Guid Id { get; set; }
         public ProfileData? Data { get; set; }
+        public List<string> PicturesId { get; set; } = new List<string>();
     }
 
     public class ProfileData : BaseProfile
@@ -22,6 +23,5 @@ namespace Siva.Marriages.Business.Models
         public BaseProfile? Mother { get; set; } = null;
         public List<SiblingsProfile> Siblings { get; set; } = new List<SiblingsProfile>();
         public decimal? Height { get; set; } = null;
-        public List<DriveFile> Photos { get; set; } = new List<DriveFile>();
     }
 }

@@ -13,14 +13,18 @@ namespace Siva.Marriages.Business
     public class GDriveProvider
     {
 
-        public DriveService DriveService { get; private set; }
+        public readonly DriveService DriveService;
+        private readonly string PicturesFolderId;
 
         public GDriveProvider(IConfiguration configuration)
         {
-            var serviceAccountJson = configuration.GetValue<string>("serviceAccountJson");
+            var serviceAccountJson = configuration.GetValue<string>("SERVICE_ACCOUNT_JSON");
+            if (string.IsNullOrEmpty(serviceAccountJson))
+                throw new ArgumentException("Without Google account, App Can't be Started");
             var credential = GoogleCredential.FromJson(serviceAccountJson)
                 .CreateScoped(DriveService.Scope.Drive);
 
+            PicturesFolderId = configuration.GetValue<string>("PICTURES_FOLDER_ID")??string.Empty;
             // Create Drive API service.
             DriveService = new DriveService(new BaseClientService.Initializer()
             {
@@ -38,6 +42,8 @@ namespace Siva.Marriages.Business
 
             if (!string.IsNullOrEmpty(parentFolderId))
                 file.Parents = new List<string>() { parentFolderId };
+            else if(!string.IsNullOrEmpty(PicturesFolderId))
+                file.Parents = new List<string>() { PicturesFolderId };
 
             new FileExtensionContentTypeProvider().TryGetContentType(fileName, out string mediaType);
 
@@ -122,6 +128,11 @@ namespace Siva.Marriages.Business
             var filesList = await filesListReq.ExecuteAsync();
 
             return filesList.Files.Select(f => f.Id);
+        }
+
+        public async Task DeleteFileAsync(string Id)
+        {
+            await DriveService.Files.Delete(Id).ExecuteAsync();
         }
     }
 }

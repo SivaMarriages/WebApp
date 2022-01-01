@@ -15,12 +15,15 @@ namespace Siva.Marriages.WebApp.Helpers
             {
                 options.UseNpgsql(configuration.GetNpgsqlConnection());
             });
+            services.AddTransient<ProfileOperations>();
         }
 
         private static string GetNpgsqlConnection(this IConfiguration configuration)
         {
             var builder = new NpgsqlConnectionStringBuilder();
             var dbUri = configuration.GetValue<Uri>("DATABASE_URL");
+            if (dbUri == default)
+                throw new ArgumentNullException("Without Database Connection, App can't be start!");
             var userInfo = dbUri.UserInfo.Split(':');
             builder.Username = userInfo[0];
             builder.Password = userInfo[1];

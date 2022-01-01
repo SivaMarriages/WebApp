@@ -1,6 +1,12 @@
+global using Microsoft.AspNetCore.Mvc;
+global using Siva.Marriages.Business;
+global using Siva.Marriages.Business.Models;
+using Siva.Marriages.WebApp.Helpers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAppServices(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
 

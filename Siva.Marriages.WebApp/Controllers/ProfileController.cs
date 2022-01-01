@@ -1,80 +1,85 @@
 ﻿
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Siva.Marriages.Business;
-using Siva.Marriages.Business.DB;
-using Siva.Marriages.Business.Models;
-using System.Text.Json;
-
 namespace Siva.Marriages.WebApp.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class ProfileController : ControllerBase
     {
-        private readonly PGSqlDbContext dbContext;
         private readonly ProfileOperations operations;
-        public ProfileController(PGSqlDbContext dbContext, ProfileOperations operations)
+        public ProfileController(ProfileOperations operations)
         {
-            this.dbContext = dbContext;
             this.operations = operations;
         }
 
         // GET: api/<ProfileController>
-        [HttpGet("api/[controller]")]
-        public async Task<IEnumerable<Profile>> Get()
+        [HttpGet]
+        public async Task<IEnumerable<CandidateProfile>> Get()
         {
-            return await operations.GetProfiles();
+            return await operations.GetProfilesAsync();
         }
 
         // GET api/<ProfileController>/5
-        [HttpGet("api/[controller]/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == id);
-            if(dbProfile == default)
+            try
             {
-                return NotFound("Profile Not Found!");
+                return Ok(await operations.GetProfileAsync(id));
             }
-            return Ok(new Profile() { Id = dbProfile.Id, Data = JsonSerializer.Deserialize<ProfileData>(dbProfile.Json) });
+            catch (AppDataException appExcep)
+            {
+                return StatusCode(appExcep.StatusCode, appExcep.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         // POST api/<ProfileController>
-        [HttpPost("api/[controller]")]
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] ProfileData value)
         {
-            dbContext.Add(new Business.DB.Models.Profile() { Id = Guid.NewGuid(), Json = JsonSerializer.Serialize(value)});
-            await dbContext.SaveChangesAsync();
+            await operations.AddProfileAsync(value);
             return Ok("Saved!");
         }
 
         // PUT api/<ProfileController>/5
-        [HttpPut("api/[controller]/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] ProfileData value)
         {
-            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == id);
-            if (dbProfile == default)
+            try
             {
-                return NotFound("Profile Not Found!");
+                await operations.UpdateProfileAsync(id, value);
+                return Ok("Updated!");
             }
-            dbProfile.Json = JsonSerializer.Serialize(value);
-            await dbContext.SaveChangesAsync();
-            return Ok("Updated!");
+            catch (AppDataException appExcep)
+            {
+                return StatusCode(appExcep.StatusCode, appExcep.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         // DELETE api/<ProfileController>/5
-        [HttpDelete("api/[controller]/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == id);
-            if (dbProfile == default)
+            try
             {
-                return NotFound("Profile Not Found!");
+                await operations.DeleteProfileAsync(id);
+                return Ok("Deleted!");
             }
-            dbContext.Profiles.Remove(dbProfile);
-            await dbContext.SaveChangesAsync();
-            return Ok("Deleted!");
+            catch (AppDataException appExcep)
+            {
+                return StatusCode(appExcep.StatusCode, appExcep.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

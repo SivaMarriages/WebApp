@@ -9,6 +9,6 @@ namespace Siva.Marriages.Business.Models
     public class DataJson
     {
         public DriveFile PicturesFolder { get; set; } = new DriveFile();
-        public List<Profile> Profiles { get; set; } = new List<Profile>();
+        public List<CandidateProfile> Profiles { get; set; } = new List<CandidateProfile>();
     }
 }

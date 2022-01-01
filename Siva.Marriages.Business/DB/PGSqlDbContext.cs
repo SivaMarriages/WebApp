@@ -17,11 +17,12 @@ namespace Siva.Marriages.Business.DB
         {
         }
 
-        public virtual DbSet<Business.DB.Models.Profile> Profiles { get; set; } = null!;
+        public virtual DbSet<Profile> Profiles { get; set; } = null!;
+        public virtual DbSet<ProfilePicture> ProfilePictures { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Business.DB.Models.Profile>(entity =>
+            modelBuilder.Entity<Profile>(entity =>
             {
                 entity.ToTable("profiles");
 
@@ -32,6 +33,21 @@ namespace Siva.Marriages.Business.DB
                 entity.Property(e => e.Json)
                     .HasColumnType("json")
                     .HasColumnName("json");
+            });
+
+            modelBuilder.Entity<ProfilePicture>(entity =>
+            {
+                entity.ToTable("profilePictures");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ProfileId).HasColumnName("profileId");
+
+                entity.HasOne(d => d.Profile)
+                    .WithMany(p => p.ProfilePictures)
+                    .HasForeignKey(d => d.ProfileId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("profilePicturesKey");
             });
 
             OnModelCreatingPartial(modelBuilder);
