@@ -21,11 +21,11 @@ namespace Siva.Marriages.Business
         public async Task<IEnumerable<Profile>> GetProfiles()
         {
             var profileBag = new ConcurrentBag<Profile>();
-            await dbContext.Profiles.ForEachAsync(async p => {
+            await dbContext.Profiles.ForEachAsync(p => {
                 profileBag.Add(new Profile()
                 {
                     Id = p.Id,
-                    Data = await JsonSerializer.Deserialize<ProfileData>(p.json)
+                    Data = JsonSerializer.Deserialize<ProfileData>(p.Json)
                 });
             });
             return profileBag;

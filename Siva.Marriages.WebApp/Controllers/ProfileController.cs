@@ -1,22 +1,31 @@
 ﻿
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Siva.Marriages.Business;
+using Siva.Marriages.Business.DB;
+using Siva.Marriages.Business.Models;
+using System.Text.Json;
+
 namespace Siva.Marriages.WebApp.Controllers
 {
     [ApiController]
     public class ProfileController : ControllerBase
     {
         private readonly PGSqlDbContext dbContext;
-        public ProfileController(PGSqlDbContext dbContext)
+        private readonly ProfileOperations operations;
+        public ProfileController(PGSqlDbContext dbContext, ProfileOperations operations)
         {
             this.dbContext = dbContext;
+            this.operations = operations;
         }
 
         // GET: api/<ProfileController>
         [HttpGet("api/[controller]")]
         public async Task<IEnumerable<Profile>> Get()
         {
-            return await dbContext.Profiles.Select(p => new Profile() { Id = p.Id, Data = JsonConvert.DeserializeObject<ProfileData>(p.Json) }).ToListAsync();
+            return await operations.GetProfiles();
         }
 
         // GET api/<ProfileController>/5
@@ -28,14 +37,14 @@ namespace Siva.Marriages.WebApp.Controllers
             {
                 return NotFound("Profile Not Found!");
             }
-            return Ok(new Profile() { Id = dbProfile.Id, Data = JsonConvert.DeserializeObject<ProfileData>(dbProfile.Json) });
+            return Ok(new Profile() { Id = dbProfile.Id, Data = JsonSerializer.Deserialize<ProfileData>(dbProfile.Json) });
         }
 
         // POST api/<ProfileController>
         [HttpPost("api/[controller]")]
         public async Task<IActionResult> Post([FromBody] ProfileData value)
         {
-            dbContext.Add(new Business.DB.Models.Profile() { Id = Guid.NewGuid(), Json = JsonConvert.SerializeObject(value)});
+            dbContext.Add(new Business.DB.Models.Profile() { Id = Guid.NewGuid(), Json = JsonSerializer.Serialize(value)});
             await dbContext.SaveChangesAsync();
             return Ok("Saved!");
         }
@@ -49,7 +58,7 @@ namespace Siva.Marriages.WebApp.Controllers
             {
                 return NotFound("Profile Not Found!");
             }
-            dbProfile.Json = JsonConvert.SerializeObject(value);
+            dbProfile.Json = JsonSerializer.Serialize(value);
             await dbContext.SaveChangesAsync();
             return Ok("Updated!");
         }

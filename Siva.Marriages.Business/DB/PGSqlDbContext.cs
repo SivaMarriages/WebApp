@@ -17,11 +17,11 @@ namespace Siva.Marriages.Business.DB
         {
         }
 
-        public virtual DbSet<Profile> Profiles { get; set; } = null!;
+        public virtual DbSet<Business.DB.Models.Profile> Profiles { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Profile>(entity =>
+            modelBuilder.Entity<Business.DB.Models.Profile>(entity =>
             {
                 entity.ToTable("profiles");
 
