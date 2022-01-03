@@ -1,0 +1,24 @@
+.form__field{
+  margin: 0 12px;
+}
+.cardContent{
+  text-align: center;
+}
+@media print {
+  .noprint {
+    display: none;
+ }
+}
+@media screen {
+  .noscreen{
+    display: none;
+  }
+}
+
+mat-card{
+  margin: 20px 0;
+}
+
+.actions{
+  margin: 0 2px;
+}

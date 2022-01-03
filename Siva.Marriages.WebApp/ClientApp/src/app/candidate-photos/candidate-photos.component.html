@@ -1,0 +1,29 @@
+<span style="display: inline;">
+  <button style="float: right;" mat-raised-button color="primary" (click)="closePhotosEdit()">Close Photos Edit
+    <mat-icon>close</mat-icon>
+  </button>
+</span>
+<br>
+<br>
+<mat-grid-list cols="2" rowHeight="2:1">
+  <ng-container *ngFor="let pictureId of picturesId;let i=index">
+    <mat-grid-tile>
+      <img [src]="'api/ProfilePictures/' + pictureId" ngxViewer width="100%" />
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <button *ngIf="i!==0" class="actions" mat-raised-button color="accent" (click)="onPrimarySet(pictureId)">Make this as Primary Photo
+        <mat-icon>grade</mat-icon>
+      </button>
+      <button mat-fab color="warn" (click)="deletePhoto(i)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-grid-tile>
+  </ng-container>
+</mat-grid-list>
+<br>
+<span style="float: right;">
+  <label>Click to Upload Photo:</label>
+  <input (change)="fileAdded($event)" class="actions" type="file" accept="image/png, image/jpeg" color="primary">
+</span>
+<br>
+<br>

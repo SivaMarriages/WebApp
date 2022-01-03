@@ -1,8 +1,11 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
+
 namespace Siva.Marriages.WebApp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProfileController : ControllerBase
     {
         private readonly ProfileOperations operations;
@@ -41,7 +44,7 @@ namespace Siva.Marriages.WebApp.Controllers
         public async Task<IActionResult> Post([FromBody] ProfileData value)
         {
             await operations.AddProfileAsync(value);
-            return Ok("Saved!");
+            return Ok();
         }
 
         // PUT api/<ProfileController>/5
@@ -51,7 +54,7 @@ namespace Siva.Marriages.WebApp.Controllers
             try
             {
                 await operations.UpdateProfileAsync(id, value);
-                return Ok("Updated!");
+                return Ok();
             }
             catch (AppDataException appExcep)
             {
@@ -70,7 +73,7 @@ namespace Siva.Marriages.WebApp.Controllers
             try
             {
                 await operations.DeleteProfileAsync(id);
-                return Ok("Deleted!");
+                return Ok();
             }
             catch (AppDataException appExcep)
             {

@@ -16,6 +16,7 @@ namespace Siva.Marriages.WebApp.Helpers
                 options.UseNpgsql(configuration.GetNpgsqlConnection());
             });
             services.AddTransient<ProfileOperations>();
+            services.AddTransient<ProfilePicturesOperations>();
         }
 
         private static string GetNpgsqlConnection(this IConfiguration configuration)

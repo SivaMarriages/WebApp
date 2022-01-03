@@ -16,33 +16,64 @@ namespace Siva.Marriages.Business
             this.dbContext = dbContext;
         }
 
-        public Stream GetPictureById(string pictureId)
+        public Stream GetPictureById(string photoId)
         {
             var stream = new MemoryStream();
-            gDriveProvider.GetFileContent(pictureId, stream);
+            gDriveProvider.GetFileContent(photoId, stream);
             return stream;
+        }
+
+        public async Task<List<string>> GetAllPhotoIds(Guid profileId)
+        {
+            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == profileId);
+            if (dbProfile == default)
+                throw new AppDataException() { StatusCode = StatusCodes.Status404NotFound, Reason = "Profile Not Found!" };
+            return JsonSerializer.Deserialize<List<string>>(dbProfile.Pictures) ?? new();
+        }
+
+        public async Task<List<string>> MakePrimaryPhoto(Guid profileId, string photoId)
+        {
+            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == profileId);
+            if (dbProfile == default)
+                throw new AppDataException() { StatusCode = StatusCodes.Status404NotFound, Reason = "Profile Not Found!" };
+            var existingPhotos = JsonSerializer.Deserialize<List<string>>(dbProfile.Pictures) ?? new();
+            if (existingPhotos.Count == 0)
+            {
+                return new();
+            }
+
+            if (!existingPhotos.Remove(photoId))
+                throw new AppDataException() { StatusCode = StatusCodes.Status404NotFound, Reason = "Picture Not Found!" };
+            existingPhotos.Insert(0, photoId);
+            dbProfile.Pictures = JsonSerializer.Serialize(existingPhotos);
+            await dbContext.SaveChangesAsync();
+            return existingPhotos;
         }
 
         public async Task AddPictureToProfile(Guid profileId, string fileExtension, Stream content)
         {
-            var dbProfile = await dbContext.Profiles.CountAsync(p => p.Id == profileId);
-            if (dbProfile == 0)
+            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == profileId);
+            if (dbProfile == default)
                 throw new AppDataException() { StatusCode = StatusCodes.Status404NotFound, Reason = "Profile Not Found!" };
-            var existingPhotosCount = await dbContext.ProfilePictures.CountAsync(pp => pp.ProfileId == profileId);
-            var fileName = $"{profileId}_{existingPhotosCount}.{fileExtension}";
-            var driveFile = await gDriveProvider.CreateFileAsync(fileExtension, content);
-            dbContext.Add(new ProfilePicture() { Id = driveFile.Id, ProfileId = profileId });
+            var existingPhotos = JsonSerializer.Deserialize<List<string>>(dbProfile.Pictures) ?? new();
+            var fileName = $"{profileId}_{existingPhotos.Count}.{fileExtension}";
+            var driveFile = await gDriveProvider.CreateFileAsync(fileName, content);
+            existingPhotos.Add(driveFile.Id);
+            dbProfile.Pictures = JsonSerializer.Serialize(existingPhotos);
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task RemovePictureFromProfile(string pictureId)
+        public async Task RemovePictureFromProfile(Guid profileId, string photoId)
         {
-            var pictureDetails = await dbContext.ProfilePictures.FirstOrDefaultAsync(pp => pp.Id == pictureId);
-            if (pictureDetails == default)
+            var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == profileId);
+            if (dbProfile == default)
+                throw new AppDataException() { StatusCode = StatusCodes.Status404NotFound, Reason = "Profile Not Found!" };
+            var picturesList = JsonSerializer.Deserialize<List<string>>(dbProfile.Pictures) ?? new();
+            if (!picturesList.Remove(photoId))
                 throw new AppDataException() { StatusCode = StatusCodes.Status404NotFound, Reason = "Picture Not Found!" };
-            await gDriveProvider.DeleteFileAsync(pictureId);
-            dbContext.ProfilePictures.Remove(pictureDetails);
+            dbProfile.Pictures = JsonSerializer.Serialize(picturesList);
             await dbContext.SaveChangesAsync();
+            await gDriveProvider.DeleteFileAsync(photoId);
         }
     }
 }

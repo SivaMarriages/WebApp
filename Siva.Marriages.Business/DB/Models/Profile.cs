@@ -5,14 +5,8 @@ namespace Siva.Marriages.Business.DB.Models
 {
     public partial class Profile
     {
-        public Profile()
-        {
-            ProfilePictures = new HashSet<ProfilePicture>();
-        }
-
         public Guid Id { get; set; }
-        public string Json { get; set; } = null!;
-
-        public virtual ICollection<ProfilePicture> ProfilePictures { get; set; }
+        public string Data { get; set; } = null!;
+        public string Pictures { get; set; } = null!;
     }
 }

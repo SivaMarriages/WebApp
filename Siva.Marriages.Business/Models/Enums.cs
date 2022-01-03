@@ -19,6 +19,15 @@ namespace Siva.Marriages.Business.Models
         Twin
     }
 
+    public enum Marital
+    {
+        Married,
+        Single,
+        Widowed,
+        Separated,
+        Divorced
+    }
+
     public enum Zodiac
     {
         Mesha,

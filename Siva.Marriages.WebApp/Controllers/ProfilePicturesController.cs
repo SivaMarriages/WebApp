@@ -1,28 +1,50 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
+
 namespace Siva.Marriages.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProfilePicturesController : ControllerBase
     {
+        private ProfileOperations profileOperations;
         private ProfilePicturesOperations profilePicturesOperations;
-        public ProfilePicturesController(ProfilePicturesOperations profilePicturesOperations)
+        public ProfilePicturesController(ProfileOperations profileOperations, ProfilePicturesOperations profilePicturesOperations)
         {
+            this.profileOperations = profileOperations;
             this.profilePicturesOperations = profilePicturesOperations;
         }
 
         // GET api/<ProfilePicturesController>/5
-        [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        [HttpGet("{photoId}")]
+        public IActionResult Get(string photoId)
         {
-            return File(profilePicturesOperations.GetPictureById(id), "application/octet-stream");
+            return File(profilePicturesOperations.GetPictureById(photoId), "application/octet-stream");
+        }
+
+        [HttpGet("{profileId}/{photoId}")]
+        public async Task<IActionResult> Get(Guid profileId, string photoId)
+        {
+            try
+            {
+                return Ok(await profilePicturesOperations.MakePrimaryPhoto(profileId, photoId));
+            }
+            catch (AppDataException appExcep)
+            {
+                return StatusCode(appExcep.StatusCode, appExcep.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         // POST api/<ProfilePicturesController>
-        [HttpPost("{id}")]
-        public async Task<IActionResult> Post(Guid profileId, List<IFormFile> files)
+        [HttpPost("{profileId}")]
+        public async Task<IActionResult> Post(Guid profileId)
         {
-            long size = files.Sum(f => f.Length);
+            var files = Request.Form.Files;
 
             foreach (var formFile in files)
             {
@@ -31,15 +53,15 @@ namespace Siva.Marriages.WebApp.Controllers
                     await profilePicturesOperations.AddPictureToProfile(profileId, formFile.FileName.Split('.').Last(), formFile.OpenReadStream());
                 }
             }
-            return Ok("Uploaded!");
+            return Ok();
         }
-                
-        // DELETE api/<ProfilePicturesController>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+
+        // DELETE api/<ProfilePicturesController>/5/1
+        [HttpDelete("{profileId}/{photoId}")]
+        public async Task<IActionResult> Delete(Guid profileId, string photoId)
         {
-            await profilePicturesOperations.RemovePictureFromProfile(id);
-            return Ok("Deleted!");
+            await profilePicturesOperations.RemovePictureFromProfile(profileId, photoId);
+            return Ok();
         }
     }
 }

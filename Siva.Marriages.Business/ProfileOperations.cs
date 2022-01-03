@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Siva.Marriages.Business.DB.Models;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,8 @@ namespace Siva.Marriages.Business
                 profileBag.Add(new CandidateProfile()
                 {
                     Id = p.Id,
-                    Data = JsonSerializer.Deserialize<ProfileData>(p.Json)
+                    Data = JsonSerializer.Deserialize<ProfileData>(p.Data) ?? new(),
+                    PicturesId = JsonSerializer.Deserialize<List<string>>(p.Pictures) ?? new()
                 });
             });
             return profileBag;
@@ -37,14 +39,14 @@ namespace Siva.Marriages.Business
             return new CandidateProfile()
             {
                 Id = dbProfile.Id,
-                Data = JsonSerializer.Deserialize<ProfileData>(dbProfile.Json),
-                PicturesId = dbProfile.ProfilePictures.Select(pp => pp.Id).ToList()
+                Data = JsonSerializer.Deserialize<ProfileData>(dbProfile.Data) ?? new(),
+                PicturesId = JsonSerializer.Deserialize<List<string>>(dbProfile.Pictures) ?? new()
             };
         }
 
         public async Task AddProfileAsync(ProfileData value)
         {
-            dbContext.Add(new Profile() { Id = Guid.NewGuid(), Json = JsonSerializer.Serialize(value) });
+            dbContext.Add(new Profile() { Id = Guid.NewGuid(), Data = JsonSerializer.Serialize(value), Pictures = JsonSerializer.Serialize(new List<string>()) });
             await dbContext.SaveChangesAsync();
         }
 
@@ -53,7 +55,7 @@ namespace Siva.Marriages.Business
             var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == id);
             if (dbProfile == default)
                 throw new AppDataException() { StatusCode = StatusCodes.Status404NotFound, Reason = "Profile Not Found!" };
-            dbProfile.Json = JsonSerializer.Serialize(value);
+            dbProfile.Data = JsonSerializer.Serialize(value);
             await dbContext.SaveChangesAsync();
         }
 

@@ -1,14 +1,25 @@
 global using Microsoft.AspNetCore.Mvc;
 global using Siva.Marriages.Business;
 global using Siva.Marriages.Business.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Siva.Marriages.WebApp.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAppServices(builder.Configuration);
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+//builder.Services.Configure<ApiBehaviorOptions>(options =>
+//                {
+//                    Request.Body.Position = 0;
+//                    string mappingsFile = await new StreamReader(Request.Body).ReadToEndAsync();
+//                    // Prevents auto model binding validation. Uncomment if you have custom validation logic
+//                    options.SuppressModelStateInvalidFilter = true;
+//                });
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options => { 
+    //options.va
+});
 
 var app = builder.Build();
 
@@ -19,10 +30,27 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
+// Uncomment for model bind debug
+//app.Use(async (context, next) => {
+//    context.Request.EnableBuffering();
+//    await next();
+//});
 
+app.UseHttpsRedirection();
+app.UseCookiePolicy(new CookiePolicyOptions() 
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict,
+    Secure = CookieSecurePolicy.Always
+});
+app.UseAuthentication();
+app.UseRouting();
+app.UseAuthorization();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseResponseCompression();
+}
+
+app.UseStaticFiles();
 
 app.MapControllerRoute(
     name: "default",

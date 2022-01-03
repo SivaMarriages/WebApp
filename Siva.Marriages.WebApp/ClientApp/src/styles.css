@@ -1,3 +1,4 @@
+@import '~viewerjs/dist/viewer.css';
 /* You can add global styles to this file, and also import other style files */
 
 /* Provide sufficient contrast against white background */
@@ -13,4 +14,15 @@ code {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.example-spacer{
+  flex: 1 1 auto;
+}
+
+.errorMessage{
+  color: #e01a76;
 }

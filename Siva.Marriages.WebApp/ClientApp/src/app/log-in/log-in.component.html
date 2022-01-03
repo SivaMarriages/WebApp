@@ -1,0 +1,17 @@
+<br>
+<form style="text-align: center;" class="form" [formGroup]="form">
+  <p>
+    <mat-form-field class="form__input">
+      <input matInput placeholder="User Name" formControlName="userName">
+    </mat-form-field>
+  </p>
+  <p>
+    <mat-form-field class="form__input">
+      <input matInput placeholder="Password" type="password" formControlName="password">
+    </mat-form-field>
+  </p>
+  <div class="form-actions">
+    <mat-checkbox class="form__input" formControlName="remember" style="margin: 0 12px;" color="primary" class="example-margin">Remember me!</mat-checkbox>
+    <button class="form-actions__login" mat-raised-button color="primary" (click)="login()">Login</button>
+  </div>
+</form>
