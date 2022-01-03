@@ -21,6 +21,11 @@ builder.Services.AddControllersWithViews(options => {
     //options.va
 });
 
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddResponseCompression();
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
