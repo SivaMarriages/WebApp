@@ -20,7 +20,17 @@ namespace Siva.Marriages.WebApp.Controllers
         [HttpGet("isauthenticated")]
         public bool IsAuthenticated()
         {
-            return HttpContext.User.Identity?.IsAuthenticated??false;
+            return HttpContext.User.Identity?.IsAuthenticated ?? false;
+        }
+
+        [HttpGet("getUserName")]
+        public IActionResult GetUserName()
+        {
+            if (HttpContext.User.Identity?.IsAuthenticated ?? false)
+            {
+                return Ok(new { name = HttpContext.User.Identity.Name ?? string.Empty });
+            }
+            return Ok(new { name = string.Empty });
         }
 
         [HttpPost("login")]

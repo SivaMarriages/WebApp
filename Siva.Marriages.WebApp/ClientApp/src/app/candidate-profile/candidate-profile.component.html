@@ -1,8 +1,8 @@
 <img class="noscreen" *ngIf="imageObject.length > 0" [src]="imageObject[0].image" ngxViewer width="100%" />
 <div class="noprint" *ngIf="!editMode">
   <p style="text-align: end;">
-    <button class="actions" mat-raised-button color="primary" (click)="onPrint()">Print Profile
-      <mat-icon>print</mat-icon>
+    <button class="actions" mat-raised-button color="primary" (click)="onPrint()">Download Profile
+      <mat-icon>download</mat-icon>
     </button>
   </p>
   <ng-image-slider *ngIf="imageObject.length !== 0" #nav [images]="imageObject" [infinite]="true" [autoSlide]="1" slideImage="1"></ng-image-slider>
