@@ -8,22 +8,17 @@ import { UIService } from "../shared/UIService";
   selector: 'app-candidate-photos',
   templateUrl: './candidate-photos.component.html'
 })
-export class CandidatePhotosComponent implements OnInit, OnDestroy{
-  sub:any;
+export class CandidatePhotosComponent implements OnInit{
   profileId:string = '';
   picturesId:string[] = [];
   constructor(private route:ActivatedRoute, private profileService: ProfileService, private uiService:UIService,private router: Router){
 
   }
 
-  ngOnInit(): void {
-    this.sub = this.route.url.subscribe(urlSegs => {
-      this.profileId = urlSegs[1].path;
-      this.profileService.GetProfile(this.profileId).then(p => this.picturesId = p.picturesId, err => this.uiService.showToast(err));
-    });
-  }
-  ngOnDestroy(): void {
-    this.sub?.unsubscribe();
+  async ngOnInit(): Promise<void> {
+    let urlSegs = this.route.snapshot.url;
+    this.profileId = urlSegs[1].path;
+    this.picturesId = (await this.profileService.GetProfile(this.profileId)).picturesId;
   }
 
   async closePhotosEdit():Promise<void>{
@@ -46,9 +41,10 @@ export class CandidatePhotosComponent implements OnInit, OnDestroy{
         let formData:FormData = new FormData();
         formData.append('uploadFile', file, file.name);
         await this.profileService.SavePictureToProfile(this.profileId, formData);
-        await this.router.navigate([routesConstants.PHOTOS, this.profileId])
+        await this.ngOnInit();
         this.uiService.showToast("Photo Uploaded Successfully!");
     }
+    event.target.value='';
   }
 
 }

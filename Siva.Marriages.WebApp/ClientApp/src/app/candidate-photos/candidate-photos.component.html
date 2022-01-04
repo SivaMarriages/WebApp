@@ -5,6 +5,12 @@
 </span>
 <br>
 <br>
+<span style="float: right;">
+  <label>Click to Upload Photo:</label>
+  <input (change)="fileAdded($event)" class="actions" type="file" accept="image/png, image/jpeg" color="primary">
+</span>
+<br>
+<br>
 <mat-grid-list cols="2" rowHeight="2:1">
   <ng-container *ngFor="let pictureId of picturesId;let i=index">
     <mat-grid-tile>
@@ -20,10 +26,5 @@
     </mat-grid-tile>
   </ng-container>
 </mat-grid-list>
-<br>
-<span style="float: right;">
-  <label>Click to Upload Photo:</label>
-  <input (change)="fileAdded($event)" class="actions" type="file" accept="image/png, image/jpeg" color="primary">
-</span>
 <br>
 <br>
