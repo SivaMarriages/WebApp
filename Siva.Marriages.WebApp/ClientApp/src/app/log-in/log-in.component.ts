@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../shared/auth.service';
 import {routesConstants} from '../shared/routes.constants';
+import { UIService } from '../shared/UIService';
 
 @Component({
   selector: 'app-log-in',
@@ -14,7 +15,7 @@ export class LogInComponent {
   public form: FormGroup;
   public hide = true;
 
-  constructor(private service: AuthService, private router: Router) {
+  constructor(private service: AuthService, private router: Router, private uiService:UIService) {
     this.form = new FormGroup({
       userName: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
@@ -31,6 +32,7 @@ export class LogInComponent {
     }
     catch (excep) {
       await this.router.navigate([routesConstants.LOGIN]);
+      this.uiService.showToast("InValid Credentials!");
       throw excep;
     }
   }
