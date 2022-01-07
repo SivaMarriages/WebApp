@@ -18,16 +18,17 @@
 </mat-form-field>
 <a class="navbar-brand" [routerLink]="['view-profile', profile.id]" style="width: 100%;"
   *ngFor="let profile of filterdProfiles">
-  <mat-card>
+  <mat-card style="text-align: center;">
     <mat-card-title><mat-icon>{{profile.data.gender.toString() === 'Male' ? 'boy':'girl'}}</mat-icon>
       <p>{{profile.data.name + ' ' + profile.data.surname}}</p>
       <p>
         {{getProfileAge(profile.data)}}
       </p>
     </mat-card-title>
-    <mat-card-header>{{getCardHeader(profile.data)}}</mat-card-header>
     <img *ngIf="profile.picturesId.length !== 0" mat-card-md-image src="{{getProfilePictureUrl(profile.picturesId)}}">
     <mat-card-content>
+      <p>{{profile.data.profession.designation + ', ' + profile.data.profession.salary}}</p>
+      <p>{{profile.data.nativePlace + ', ' + profile.data.education.name}}</p>
       <p>{{getCardBirth(profile.data.birthDetails)}}</p>
       <p>{{getParents(profile.data)}}</p>
     </mat-card-content>
