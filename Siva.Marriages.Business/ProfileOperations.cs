@@ -1,4 +1,5 @@
-﻿using Siva.Marriages.Business.DB.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Siva.Marriages.Business.DB.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -44,10 +45,12 @@ namespace Siva.Marriages.Business
             };
         }
 
-        public async Task AddProfileAsync(ProfileData value)
+        public async Task<Guid> AddProfileAsync(ProfileData value)
         {
-            dbContext.Add(new Profile() { Id = Guid.NewGuid(), Data = JsonSerializer.Serialize(value), Pictures = JsonSerializer.Serialize(new List<string>()) });
+            var profileId = Guid.NewGuid();
+            dbContext.Add(new Profile() { Id = profileId, Data = JsonSerializer.Serialize(value), Pictures = JsonSerializer.Serialize(new List<string>()) });
             await dbContext.SaveChangesAsync();
+            return profileId;
         }
 
         public async Task UpdateProfileAsync(Guid id, ProfileData value)
@@ -59,11 +62,22 @@ namespace Siva.Marriages.Business
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteProfileAsync(Guid id)
+        public async Task DeleteProfileAsync(Guid id, GDriveProvider gDriveProvider)
         {
             var dbProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == id);
             if (dbProfile == default)
                 throw new AppDataException() { StatusCode = StatusCodes.Status404NotFound, Reason = "Profile Not Found!" };
+            try
+            {
+                Parallel.ForEach(JsonSerializer.Deserialize<List<string>>(dbProfile.Pictures) ?? new(), p =>
+                {
+                    gDriveProvider.DeleteFileAsync(p).Wait();
+                });
+            }
+            catch
+            {
+
+            }
             dbContext.Profiles.Remove(dbProfile);
             await dbContext.SaveChangesAsync();
         }

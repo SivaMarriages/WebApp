@@ -4,24 +4,21 @@ export interface CandidateProfile {
   picturesId: string[]
 }
 
-export interface ProfileData extends BaseProfile {
+export interface ProfileData {
+  name: string,
   surname: string,
   motherMaidenname: string,
-  birthDetails: BirthDetails,
   nativePlace: string,
-  father: BaseProfile,
-  mother: BaseProfile,
-  siblings: SiblingsProfile[],
-  height: string
-}
-
-export interface BaseProfile {
-  name: string,
   gender: Gender,
   contactDetails: ContactDetails,
+  birthDetails: BirthDetails,
   profession: Profession,
   education: Education,
-  otherDetails: string
+  height: string,
+  otherDetails: string,
+  father: string,
+  mother: string,
+  siblings: SiblingsProfile[]
 }
 
 export interface ContactDetails {
@@ -31,16 +28,15 @@ export interface ContactDetails {
 }
 
 export interface BirthDetails {
-  dateOfBirth: Date,
-  timeOfBirth: Date,
+  dateOfBirth: string,
+  timeOfBirth: string,
   placeOfBirth: string,
   rasi: Zodiac,
   nakshatra: Nakshatra,
 }
 
-export interface SiblingsProfile extends BaseProfile {
-  maritalStatus: Marital,
-  elder: Elder
+export interface SiblingsProfile {
+  details: string
 }
 
 export enum Gender {

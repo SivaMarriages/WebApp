@@ -1,23 +1,21 @@
-<span style="display: inline;">
-  <button style="float: right;" mat-raised-button color="primary" (click)="closePhotosEdit()">Close Photos Edit
+<div>
+  <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">Add Photos
+    <mat-icon>add</mat-icon>
+    <input #fileInput type="file" accept="image/png, image/jpeg" class="actions" (change)="fileAdded($event)" style="display:none;" />
+  </button>
+  <button mat-raised-button color="accent" (click)="closePhotosEdit()">Close Photos Edit
     <mat-icon>close</mat-icon>
   </button>
-</span>
+</div>
 <br>
 <br>
-<span style="float: right;">
-  <label>Click to Upload Photo:</label>
-  <input (change)="fileAdded($event)" class="actions" type="file" accept="image/png, image/jpeg" color="primary">
-</span>
-<br>
-<br>
-<mat-grid-list cols="2" rowHeight="2:1">
+<mat-grid-list cols="2" rowHeight="2:1" *ngIf="picturesId.length !== 0">
   <ng-container *ngFor="let pictureId of picturesId;let i=index">
     <mat-grid-tile>
       <img [src]="'api/ProfilePictures/' + pictureId" ngxViewer width="100%" />
     </mat-grid-tile>
     <mat-grid-tile>
-      <button *ngIf="i!==0" class="actions" mat-raised-button color="accent" (click)="onPrimarySet(pictureId)">Make this as Primary Photo
+      <button matTooltip="Make this as Primary Photo" *ngIf="i!==0" class="actions" mat-raised-button color="accent" (click)="onPrimarySet(pictureId)">
         <mat-icon>grade</mat-icon>
       </button>
       <button mat-fab color="warn" (click)="deletePhoto(i)">
@@ -26,5 +24,6 @@
     </mat-grid-tile>
   </ng-container>
 </mat-grid-list>
+<p style="text-align: center;" *ngIf="picturesId.length === 0">Photos Not Added Yet!</p>
 <br>
 <br>

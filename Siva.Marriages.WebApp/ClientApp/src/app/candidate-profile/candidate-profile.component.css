@@ -13,6 +13,16 @@
   .noscreen{
     display: none;
   }
+  .formViewContainer{
+    max-height: 53vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .formEditContainer{
+    max-height: 85vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 }
 
 mat-card{

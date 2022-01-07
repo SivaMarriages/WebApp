@@ -1,3 +1,8 @@
+<div class="noscreen" style="text-align: center;">
+  <pre>
+{{getHeader}}
+  </pre>
+</div>
 <img class="noscreen" *ngIf="imageObject.length > 0" [src]="imageObject[0].image" ngxViewer width="100%" />
 <div class="noprint" *ngIf="!editMode">
   <p style="text-align: end;">
@@ -7,12 +12,10 @@
   </p>
   <ng-image-slider *ngIf="imageObject.length !== 0" #nav [images]="imageObject" [infinite]="true" [autoSlide]="1" slideImage="1"></ng-image-slider>
   <p style="text-align: center;" *ngIf="imageObject.length === 0">Photos Not Added Yet!</p>
-  <p *ngIf="profileId !== ''" style="text-align: right;">
-    <a class="navbar-brand" [routerLink]="['/photos', profileId]">
-      <button class="actions" mat-raised-button color="accent">Edit Photos
-        <mat-icon>edit</mat-icon>
-      </button>
-    </a>
+  <p style="text-align: right;">
+    <button class="actions" mat-raised-button color="accent" (click)="onEditPhotos()">Edit Photos
+      <mat-icon>edit</mat-icon>
+    </button>
   </p>
 </div>
 <span class="noprint" *ngIf="!editMode">
@@ -27,6 +30,15 @@
   </button>
 </span>
 <form [formGroup]="profileForm">
+  <div class="noprint" *ngIf="editMode" style="text-align: center;" class="form-actions">
+    <button class="form-actions actions" mat-raised-button color="primary" (click)="onSubmit()">Save
+      <mat-icon>save</mat-icon>
+    </button>
+    <button class="form-actions actions" mat-raised-button color="accent" (click)="onCancel()">Cancel
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </div>
+  <div [ngClass]="editMode?'formEditContainer':'formViewContainer'">
   <mat-card>
     <mat-card-title>Details</mat-card-title>
     <mat-card-content class="cardContent">
@@ -69,7 +81,7 @@
     <mat-card-title>Birth Details</mat-card-title>
     <mat-card-content class="cardContent" formGroupName="birthDetails">
       <mat-form-field class="form__field">
-        <input matInput type="date" placeholder="Date" formControlName="dateOfBirth">
+        <input matInput type="date" placeholder="Date(mm/dd/yyyy)" formControlName="dateOfBirth">
       </mat-form-field>
       <mat-form-field class="form__field">
         <input matInput type="time" placeholder="Time" formControlName="timeOfBirth">
@@ -146,136 +158,20 @@
   </mat-card>
   <mat-card>
     <mat-card-title>Father Details</mat-card-title>
-    <mat-card-content formGroupName="father">
-      <mat-card>
-        <mat-card-title>Details</mat-card-title>
-        <mat-card-content class="cardContent">
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Name" formControlName="name">
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="noprint">
-        <mat-card-title>Contact Details</mat-card-title>
-        <mat-card-content class="cardContent" formGroupName="contactDetails">
-          <mat-form-field class="form__field">
-            <input matInput type="tel" placeholder="Mobile Number" formControlName="number1">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput type="tel" placeholder="Home Number" formControlName="number2">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput type="email" placeholder="Email" formControlName="email">
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
-      <mat-card>
-        <mat-card-title>Work Details</mat-card-title>
-        <mat-card-content class="cardContent" formGroupName="profession">
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Designation" formControlName="designation">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Company Name" formControlName="companyName">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Salary" formControlName="salary">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Place" formControlName="place">
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
-      <mat-card>
-        <mat-card-title>Education Details</mat-card-title>
-        <mat-card-content class="cardContent" formGroupName="education">
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Qualification" formControlName="name">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="College/School Name" formControlName="institute">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Place" formControlName="location">
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
-      <mat-card>
-        <mat-card-title>Other Details</mat-card-title>
-        <mat-card-content class="cardContent">
-          <mat-form-field style="width: 100%;" class="form__field">
-            <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="6" placeholder="Other"
-              formControlName="otherDetails"></textarea>
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
+    <mat-card-content class="cardContent">
+      <mat-form-field style="width: 100%;" class="form__field">
+        <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="6" placeholder="Details"
+          formControlName="father"></textarea>
+      </mat-form-field>
     </mat-card-content>
   </mat-card>
   <mat-card>
     <mat-card-title>Mother Details</mat-card-title>
-    <mat-card-content formGroupName="mother">
-      <mat-card>
-        <mat-card-title>Details</mat-card-title>
-        <mat-card-content class="cardContent">
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Name" formControlName="name">
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="noprint">
-        <mat-card-title>Contact Details</mat-card-title>
-        <mat-card-content class="cardContent" formGroupName="contactDetails">
-          <mat-form-field class="form__field">
-            <input matInput type="tel" placeholder="Mobile Number" formControlName="number1">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput type="tel" placeholder="Home Number" formControlName="number2">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput type="email" placeholder="Email" formControlName="email">
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
-      <mat-card>
-        <mat-card-title>Work Details</mat-card-title>
-        <mat-card-content class="cardContent" formGroupName="profession">
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Designation" formControlName="designation">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Company Name" formControlName="companyName">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Salary" formControlName="salary">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Place" formControlName="place">
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
-      <mat-card>
-        <mat-card-title>Education Details</mat-card-title>
-        <mat-card-content class="cardContent" formGroupName="education">
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Qualification" formControlName="name">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="College/School Name" formControlName="institute">
-          </mat-form-field>
-          <mat-form-field class="form__field">
-            <input matInput placeholder="Place" formControlName="location">
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
-      <mat-card>
-        <mat-card-title>Other Details</mat-card-title>
-        <mat-card-content class="cardContent">
-          <mat-form-field style="width: 100%;" class="form__field">
-            <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="6" placeholder="Other"
-              formControlName="otherDetails"></textarea>
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
+    <mat-card-content class="cardContent">
+      <mat-form-field style="width: 100%;" class="form__field">
+        <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="6" placeholder="Details"
+          formControlName="mother"></textarea>
+      </mat-form-field>
     </mat-card-content>
   </mat-card>
   <mat-card>
@@ -284,92 +180,11 @@
       <ng-container formArrayName="siblings">
         <mat-card *ngFor="let sibling of siblingsGroup; let i = index">
           <mat-card-title>{{"Sibling " + (i + 1)}}</mat-card-title>
-          <mat-card-content [formGroup]="sibling">
-            <mat-card>
-              <mat-card-title>Details</mat-card-title>
-              <mat-card-content class="cardContent">
-                <mat-form-field class="form__field">
-                  <input matInput placeholder="Name" formControlName="name">
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <mat-label>Marital Status</mat-label>
-                  <mat-select formControlName="maritalStatus">
-                    <mat-option *ngFor="let maritalStatus of maritalStatuses" [value]="maritalStatus">
-                      {{maritalStatus}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <mat-label>Elder</mat-label>
-                  <mat-select formControlName="elder">
-                    <mat-option *ngFor="let elderStatus of elderStatuses" [value]="elderStatus">
-                      {{elderStatus}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <mat-label>Gender</mat-label>
-                  <mat-select formControlName="gender">
-                    <mat-option value="Male">Male</mat-option>
-                    <mat-option value="Female">Female</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </mat-card-content>
-            </mat-card>
-            <mat-card class="noprint">
-              <mat-card-title>Contact Details</mat-card-title>
-              <mat-card-content class="cardContent" formGroupName="contactDetails">
-                <mat-form-field class="form__field">
-                  <input matInput type="tel" placeholder="Mobile Number" formControlName="number1">
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <input matInput type="tel" placeholder="Home Number" formControlName="number2">
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <input matInput type="email" placeholder="Email" formControlName="email">
-                </mat-form-field>
-              </mat-card-content>
-            </mat-card>
-            <mat-card>
-              <mat-card-title>Work Details</mat-card-title>
-              <mat-card-content class="cardContent" formGroupName="profession">
-                <mat-form-field class="form__field">
-                  <input matInput placeholder="Designation" formControlName="designation">
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <input matInput placeholder="Company Name" formControlName="companyName">
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <input matInput placeholder="Salary" formControlName="salary">
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <input matInput placeholder="Place" formControlName="place">
-                </mat-form-field>
-              </mat-card-content>
-            </mat-card>
-            <mat-card>
-              <mat-card-title>Education Details</mat-card-title>
-              <mat-card-content class="cardContent" formGroupName="education">
-                <mat-form-field class="form__field">
-                  <input matInput placeholder="Qualification" formControlName="name">
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <input matInput placeholder="College/School Name" formControlName="institute">
-                </mat-form-field>
-                <mat-form-field class="form__field">
-                  <input matInput placeholder="Place" formControlName="location">
-                </mat-form-field>
-              </mat-card-content>
-            </mat-card>
-            <mat-card>
-              <mat-card-title>Other Details</mat-card-title>
-              <mat-card-content class="cardContent">
-                <mat-form-field style="width: 100%;" class="form__field">
-                  <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="6" placeholder="Other"
-                    formControlName="otherDetails"></textarea>
-                </mat-form-field>
-              </mat-card-content>
-            </mat-card>
+          <mat-card-content [formGroup]="sibling" class="cardContent">
+            <mat-form-field style="width: 100%;" class="form__field">
+              <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="6" placeholder="Details"
+                formControlName="details"></textarea>
+            </mat-form-field>
           </mat-card-content>
           <mat-card-actions class="noprint" *ngIf="editMode" align="end">
             <button mat-fab color="warn" (click)="deleteSibling(i)">
@@ -385,16 +200,13 @@
       </button>
     </mat-card-actions>
   </mat-card>
-  <div class="noprint" *ngIf="editMode" style="text-align: center;" class="form-actions">
-    <button class="form-actions actions" mat-raised-button color="primary" (click)="onSubmit()">Save
-      <mat-icon>save</mat-icon>
-    </button>
-    <button class="form-actions actions" mat-raised-button color="accent" (click)="onCancel()">Cancel
-      <mat-icon>cancel</mat-icon>
-    </button>
-  </div>
-  <div style="margin-bottom:50;">
-    <br>
-  </div>
+</div>
 </form>
 <img class="noscreen" *ngFor="let imageobj of getNonPrimePhotos;let i = index;" [src]="imageobj.image" ngxViewer width="100%" />
+<br>
+<br>
+<div class="noscreen" style="text-align: center;">
+  <pre>
+{{getHeader}}
+  </pre>
+</div>

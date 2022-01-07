@@ -60,48 +60,8 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     }),
     height: [''],
     otherDetails: [''],
-    father: this.fb.group({
-      name: ['', Validators.required],
-      gender: ['Male'],
-      contactDetails: this.fb.group({
-        number1: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
-        number2: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
-        email: ['', Validators.email]
-      }),
-      profession: this.fb.group({
-        designation: [''],
-        companyName: [''],
-        salary: [''],
-        place: ['']
-      }),
-      education: this.fb.group({
-        name: [''],
-        institute: [''],
-        location: ['']
-      }),
-      otherDetails: [''],
-    }),
-    mother: this.fb.group({
-      name: ['', Validators.required],
-      gender: ['Female'],
-      contactDetails: this.fb.group({
-        number1: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
-        number2: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
-        email: ['', Validators.email]
-      }),
-      profession: this.fb.group({
-        designation: [''],
-        companyName: [''],
-        salary: [''],
-        place: ['']
-      }),
-      education: this.fb.group({
-        name: [''],
-        institute: [''],
-        location: ['']
-      }),
-      otherDetails: [''],
-    }),
+    father: ['', Validators.required],
+    mother: ['', Validators.required],
     siblings: this.fb.array([])
   });
   constructor(private fb: FormBuilder, private profileService: ProfileService, private router: Router, private route:ActivatedRoute, private uiService:UIService) {
@@ -158,9 +118,6 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
         this.newProfile = true;
         this.editMode = true;
       }else if(urlSegs[0].path === 'view-profile'){
-        this.newProfile = false;
-        this.editMode = false;
-        this.profileForm.disable();
         this.profileId = urlSegs[1].path;
         this.profileService.GetProfile(this.profileId).then(profile => {
           this.imageObject = profile.picturesId.map(id => {
@@ -170,11 +127,11 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
             this.addSibling();
           }
           this.profileForm.setValue(profile.data);
+          this.newProfile = false;
+          this.editMode = false;
+          this.profileForm.disable();
         }, err => this.uiService.showToast(err));
       }else if(urlSegs[0].path === 'edit-profile'){
-        this.newProfile = false;
-        this.editMode = true;
-        this.profileForm.enable();
         this.profileId = urlSegs[1].path;
         this.profileService.GetProfile(this.profileId).then(profile => {
           this.imageObject = profile.picturesId.map(id => {
@@ -184,6 +141,9 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
             this.addSibling();
           }
           this.profileForm.setValue(profile.data);
+          this.newProfile = false;
+          this.editMode = true;
+          this.profileForm.enable();
         }, err => this.uiService.showToast(err));
       }
     });
@@ -205,27 +165,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
 
   addSibling(): void {
     this.siblingsGroup.push(this.fb.group({
-      name: ['', Validators.required],
-      gender: ['', Validators.required],
-      contactDetails: this.fb.group({
-        number1: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
-        number2: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
-        email: ['', Validators.email]
-      }),
-      profession: this.fb.group({
-        designation: [''],
-        companyName: [''],
-        salary: [''],
-        place: ['']
-      }),
-      education: this.fb.group({
-        name: [''],
-        institute: [''],
-        location: ['']
-      }),
-      maritalStatus: [''],
-      elder: [''],
-      otherDetails: [''],
+      details: ['', Validators.required]
     }));
   }
 
@@ -235,6 +175,10 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
 
   async onEdit():Promise<void>{
     await this.router.navigate([routesConstants.EDITPROFILE, this.profileId]);
+  }
+
+  async onEditPhotos():Promise<void>{
+    await this.router.navigate([routesConstants.PHOTOS, this.profileId]);
   }
 
   async onDelete():Promise<void>{
@@ -255,10 +199,12 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           }
         })) {
         if (this.newProfile) {
-          await this.profileService.CreateProfile(this.profileForm.getRawValue());
-          await this.router.navigate([routesConstants.HOME]);
+          const profileId =  await this.profileService.CreateProfile(this.profileForm.getRawValue());
+          this.profileForm.reset();
+          await this.router.navigate([routesConstants.VIEWPROFILE, profileId]);
         } else {
           await this.profileService.UpdateProfile(this.profileId, this.profileForm.getRawValue());
+          this.profileForm.reset();
           await this.router.navigate([routesConstants.VIEWPROFILE, this.profileId]);
         }
         this.uiService.showToast('Saved Profile Successfully!');
@@ -290,5 +236,12 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
 
   get getNonPrimePhotos(){
     return this.imageObject.filter((x, i) => i !== 0);
+  }
+
+  get getHeader(){
+    return "                   💐 శివ మ్యారేజ్ బ్యూరో  విజయవాడ 💐                    \n"
+    + "                       * 9032055444 * 9866072959 *                        \n"
+    + "                     🙏పరిచయం మాది వివరణామిది🙏                       \n"
+    + "🙏వధువు, 🧛‍♀మరియు, వరుడు,🧛‍♂ల గుణ, గుణాలు, తెలుసుకొవలసిన బాధ్యత మిది🙏\n";
   }
 }

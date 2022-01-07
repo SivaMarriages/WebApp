@@ -43,8 +43,7 @@ namespace Siva.Marriages.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ProfileData value)
         {
-            await operations.AddProfileAsync(value);
-            return Ok();
+            return Ok(await operations.AddProfileAsync(value));
         }
 
         // PUT api/<ProfileController>/5
@@ -68,11 +67,11 @@ namespace Siva.Marriages.WebApp.Controllers
 
         // DELETE api/<ProfileController>/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id, [FromServices] GDriveProvider gDriveProvider)
         {
             try
             {
-                await operations.DeleteProfileAsync(id);
+                await operations.DeleteProfileAsync(id, gDriveProvider);
                 return Ok();
             }
             catch (AppDataException appExcep)

@@ -38,10 +38,10 @@ export class ProfileService {
     return ret;
   }
 
-  public async CreateProfile(profileData: ProfileData): Promise<void> {
+  public async CreateProfile(profileData: ProfileData): Promise<string> {
     this.uiService.showSpinner();
     try {
-      await this.http.post('api/profile/', profileData).toPromise();
+      return await this.http.post<string>('api/profile/', profileData).toPromise();
     } finally {
       this.uiService.stopSpinner();
     }

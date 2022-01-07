@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { BaseProfile, BirthDetails, CandidateProfile, ProfileData } from '../models/profile';
+import { BirthDetails, CandidateProfile, ProfileData } from '../models/profile';
 import { ProfileService } from '../shared/profile.service';
 import { UIService } from '../shared/UIService';
 
@@ -18,7 +18,7 @@ export class HomeComponent {
     retStr += data.surname;
     retStr += data.motherMaidenname;
     retStr += data.nativePlace;
-    retStr += data.gender;
+    retStr += data.gender.toString();
     retStr += data.birthDetails.dateOfBirth;
     retStr += data.birthDetails.timeOfBirth;
     retStr += data.birthDetails.placeOfBirth;
@@ -36,46 +36,10 @@ export class HomeComponent {
     retStr += data.education.location;
     retStr += data.height;
     retStr += data.otherDetails;
-    retStr += data.father.name;
-    retStr += data.father.contactDetails.number1;
-    retStr += data.father.contactDetails.number2;
-    retStr += data.father.contactDetails.email;
-    retStr += data.father.profession.designation;
-    retStr += data.father.profession.companyName;
-    retStr += data.father.profession.place;
-    retStr += data.father.profession.salary;
-    retStr += data.father.education.name;
-    retStr += data.father.education.institute;
-    retStr += data.father.education.location;
-    retStr += data.father.otherDetails;
-    retStr += data.mother.name;
-    retStr += data.mother.contactDetails.number1;
-    retStr += data.mother.contactDetails.number2;
-    retStr += data.mother.contactDetails.email;
-    retStr += data.mother.profession.designation;
-    retStr += data.mother.profession.companyName;
-    retStr += data.mother.profession.place;
-    retStr += data.mother.profession.salary;
-    retStr += data.mother.education.name;
-    retStr += data.mother.education.institute;
-    retStr += data.mother.education.location;
-    retStr += data.mother.otherDetails;
+    retStr += data.father;
+    retStr += data.mother;
     for (let sibling of data.siblings) {
-      retStr += sibling.name;
-      retStr += sibling.maritalStatus;
-      retStr += sibling.elder;
-      retStr += sibling.gender;
-      retStr += sibling.contactDetails.number1;
-      retStr += sibling.contactDetails.number2;
-      retStr += sibling.contactDetails.email;
-      retStr += sibling.profession.designation;
-      retStr += sibling.profession.companyName;
-      retStr += sibling.profession.place;
-      retStr += sibling.profession.salary;
-      retStr += sibling.education.name;
-      retStr += sibling.education.institute;
-      retStr += sibling.education.location;
-      retStr += sibling.otherDetails;
+      retStr += sibling.details;
     }
     return retStr.toLowerCase();
   }
@@ -91,16 +55,16 @@ export class HomeComponent {
   }
 
   getCardTitle(data: ProfileData): string {
-    return `${data.name} ${data.surname}` + (data.birthDetails && data.birthDetails.dateOfBirth ? `Age: ${(new Date()).getFullYear() - data.birthDetails.dateOfBirth.getFullYear()} years` : '');
+    return `${data.name} ${data.surname}` + (data.birthDetails && data.birthDetails.dateOfBirth ? `Age: ${(new Date()).getFullYear() - (new Date(data.birthDetails.dateOfBirth)).getFullYear()} years` : '');
   }
   getCardHeader(data: ProfileData): string {
-    return `${data.profession.designation} ${data.profession.designation} ${data.profession.place} ${data.profession.salary} ${data.education.name}`;
+    return `${data.profession.designation} ${data.profession.place} ${data.profession.salary} ${data.education.name}`;
   }
   getCardBirth(data: BirthDetails): string {
     return `${data.dateOfBirth} ${data.timeOfBirth} ${data.placeOfBirth} ${data.rasi} ${data.nakshatra}`;
   }
   getParents(data: ProfileData): string {
-    return `Father: ${data.father.name}, Mother:${data.mother.name}`;
+    return `Father: ${data.father}, Mother:${data.mother}`;
   }
   getProfilePictureUrl(data: string[]) {
     return `api/profilePictures/${data[0]}`;
