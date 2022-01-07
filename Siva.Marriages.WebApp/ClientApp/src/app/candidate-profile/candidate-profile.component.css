@@ -4,22 +4,18 @@
 .cardContent{
   text-align: center;
 }
-@media print {
-  .noprint {
-    display: none;
- }
-}
+
 @media screen {
   .noscreen{
     display: none;
   }
   .formViewContainer{
-    max-height: 53vh;
+    max-height: 56vh;
     overflow-y: auto;
     overflow-x: hidden;
   }
   .formEditContainer{
-    max-height: 85vh;
+    max-height: 89vh;
     overflow-y: auto;
     overflow-x: hidden;
   }

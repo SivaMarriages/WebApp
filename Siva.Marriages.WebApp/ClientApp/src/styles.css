@@ -26,3 +26,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .errorMessage{
   color: #e01a76;
 }
+
+@media print {
+  .noprint {
+    display: none;
+ }
+}

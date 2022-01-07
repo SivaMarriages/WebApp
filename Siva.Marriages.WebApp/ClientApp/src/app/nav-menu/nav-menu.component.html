@@ -4,7 +4,7 @@
   </button>
   <span class="navbar-brand" [routerLink]="['/']">Siva Marriages</span>
   <span class="example-spacer"></span>
-  <span *ngIf="userName !== ''">{{userName}}
+  <span class="noprint" *ngIf="userName !== ''">{{userName}}
     <button color="warn" mat-raised-button (click)="onLogOut()" >
       <mat-icon>logout</mat-icon>
     </button>

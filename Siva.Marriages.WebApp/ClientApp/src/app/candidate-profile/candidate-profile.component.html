@@ -1,7 +1,6 @@
+<br class="noscreen">
 <div class="noscreen" style="text-align: center;">
-  <pre>
-{{getHeader}}
-  </pre>
+  <p *ngFor="let header of getHeader">{{header}}</p>
 </div>
 <img class="noscreen" *ngIf="imageObject.length > 0" [src]="imageObject[0].image" ngxViewer width="100%" />
 <div class="noprint" *ngIf="!editMode">
@@ -203,10 +202,8 @@
 </div>
 </form>
 <img class="noscreen" *ngFor="let imageobj of getNonPrimePhotos;let i = index;" [src]="imageobj.image" ngxViewer width="100%" />
-<br>
-<br>
+<br class="noscreen">
+<br class="noscreen">
 <div class="noscreen" style="text-align: center;">
-  <pre>
-{{getHeader}}
-  </pre>
+  <p *ngFor="let header of getHeader">{{header}}</p>
 </div>

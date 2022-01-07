@@ -54,11 +54,11 @@ export class HomeComponent {
     }, err => this.uiService.showToast(err));
   }
 
-  getCardTitle(data: ProfileData): string {
-    return `${data.name} ${data.surname}` + (data.birthDetails && data.birthDetails.dateOfBirth ? `Age: ${(new Date()).getFullYear() - (new Date(data.birthDetails.dateOfBirth)).getFullYear()} years` : '');
+  getProfileAge(data: ProfileData): string {
+    return (data.birthDetails && data.birthDetails.dateOfBirth ? `Age: ${(new Date()).getFullYear() - (new Date(data.birthDetails.dateOfBirth)).getFullYear()} years` : '');
   }
   getCardHeader(data: ProfileData): string {
-    return `${data.profession.designation} ${data.profession.place} ${data.profession.salary} ${data.education.name}`;
+    return `${data.profession.designation}, ${data.profession.place}, ${data.profession.salary}, ${data.education.name}`;
   }
   getCardBirth(data: BirthDetails): string {
     return `${data.dateOfBirth} ${data.timeOfBirth} ${data.placeOfBirth} ${data.rasi} ${data.nakshatra}`;

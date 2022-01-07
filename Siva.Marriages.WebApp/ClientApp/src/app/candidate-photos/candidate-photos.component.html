@@ -7,8 +7,6 @@
     <mat-icon>close</mat-icon>
   </button>
 </div>
-<br>
-<br>
 <mat-grid-list cols="2" rowHeight="2:1" *ngIf="picturesId.length !== 0">
   <ng-container *ngFor="let pictureId of picturesId;let i=index">
     <mat-grid-tile>
@@ -25,5 +23,3 @@
   </ng-container>
 </mat-grid-list>
 <p style="text-align: center;" *ngIf="picturesId.length === 0">Photos Not Added Yet!</p>
-<br>
-<br>
