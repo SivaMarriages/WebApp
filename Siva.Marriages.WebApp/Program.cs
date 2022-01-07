@@ -2,6 +2,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using Siva.Marriages.Business;
 global using Siva.Marriages.Business.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Diagnostics;
 using Siva.Marriages.WebApp.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,15 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler(errorApp =>
+    {
+        errorApp.Run(async context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+            await context.Response.WriteAsync($"Server error. Detailed message: {exception} ");
+        });
+    });
     app.UseHsts();
 }
 
