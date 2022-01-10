@@ -1,17 +1,10 @@
-<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-  <div class="container">
-    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
-      <ul class="navbar-nav flex-grow">
-        <li class="nav-item">
-          <a class="nav-link text-dark" [routerLink]="['/new-profile']">
-            <button class="form-actions actions" mat-raised-button color="accent">New Profile
-              <mat-icon>add</mat-icon>
-            </button></a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<div style="text-align: right;">
+  <a class="nav-link text-dark" [routerLink]="['/new-profile']">
+    <button class="form-actions actions" mat-raised-button color="accent">New Profile
+      <mat-icon>add</mat-icon>
+    </button>
+  </a>
+</div>
 <mat-form-field style="width: 100%;">
   <input type="text" matInput (change)="applyFilter($event)" placeholder="Search">
   <mat-icon matSuffix>search</mat-icon>
