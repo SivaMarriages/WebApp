@@ -21,6 +21,12 @@
   }
 }
 
+@media print {
+  .noprint {
+    display: none;
+ }
+}
+
 mat-card{
   margin: 20px 0;
 }
