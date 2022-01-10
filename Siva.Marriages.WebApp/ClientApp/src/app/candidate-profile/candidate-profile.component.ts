@@ -123,7 +123,8 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           this.imageObject = profile.picturesId.map(id => {
             return {image:"api/ProfilePictures/"+id, thumbImage:"api/ProfilePictures/"+id}
           });
-          if(this.siblingsGroup.length === 0 && profile.data.siblings.length > 0){
+          this.resetSiblingsGroup();
+          for(let i =0; i<profile.data.siblings.length; i++){
             this.addSibling();
           }
           this.profileForm.setValue(profile.data);
@@ -137,7 +138,8 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           this.imageObject = profile.picturesId.map(id => {
             return {image:"api/ProfilePictures/"+id, thumbImage:"api/ProfilePictures/"+id}
           });
-          if(this.siblingsGroup.length === 0 && profile.data.siblings.length > 0){
+          this.resetSiblingsGroup();
+          for(let i =0; i<profile.data.siblings.length; i++){
             this.addSibling();
           }
           this.profileForm.setValue(profile.data);
@@ -161,6 +163,10 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
 
   get siblingsGroup() {
     return (this.profileForm.get('siblings') as FormArray).controls as FormGroup[];
+  }
+
+  resetSiblingsGroup():void{
+    this.profileForm.setControl('siblings', this.fb.array([]));
   }
 
   addSibling(): void {
