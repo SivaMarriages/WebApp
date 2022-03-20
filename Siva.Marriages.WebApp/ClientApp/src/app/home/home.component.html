@@ -9,24 +9,23 @@
   <input type="text" matInput (change)="applyFilter($event)" placeholder="Search">
   <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
-<a class="navbar-brand" [routerLink]="['view-profile', profile.id]" style="width: 100%;"
+<mat-card style="text-align: center;margin-bottom: 10px;" [routerLink]="['view-profile', profile.id]"
   *ngFor="let profile of filterdProfiles">
-  <mat-card style="text-align: center;">
-    <mat-card-title><mat-icon>{{profile.data.gender.toString() === 'Male' ? 'boy':'girl'}}</mat-icon>
-      <p>{{profile.data.name + ' ' + profile.data.surname}}</p>
-      <p>
-        {{getProfileAge(profile.data)}}
-      </p>
-    </mat-card-title>
-    <img *ngIf="profile.picturesId.length !== 0" mat-card-md-image src="{{getProfilePictureUrl(profile.picturesId)}}">
-    <mat-card-content>
-      <p>{{profile.data.profession.designation + ', ' + profile.data.profession.salary}}</p>
-      <p>{{profile.data.nativePlace + ', ' + profile.data.education.name}}</p>
-      <p>{{getCardBirth(profile.data.birthDetails)}}</p>
-      <p>{{getParents(profile.data)}}</p>
-    </mat-card-content>
-  </mat-card>
-</a>
+  <mat-card-title>
+    <mat-icon>{{profile.data.gender.toString() === 'Male' ? 'boy':'girl'}}</mat-icon>
+    <p>{{profile.data.name + ' ' + profile.data.surname}}</p>
+    <p>
+      {{getProfileAge(profile.data)}}
+    </p>
+  </mat-card-title>
+  <img *ngIf="profile.picturesId.length !== 0" mat-card-md-image src="{{getProfilePictureUrl(profile.picturesId)}}">
+  <mat-card-content>
+    <p>{{profile.data.profession.designation + ', ' + profile.data.profession.salary}}</p>
+    <p>{{profile.data.nativePlace + ', ' + profile.data.education.name}}</p>
+    <p>{{getCardBirth(profile.data.birthDetails)}}</p>
+    <p>{{getParents(profile.data)}}</p>
+  </mat-card-content>
+</mat-card>
 <div *ngIf="filterdProfiles.length == 0" style="text-align: center;">
   <mat-label>No Results!</mat-label>
 </div>
