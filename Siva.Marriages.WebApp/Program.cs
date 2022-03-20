@@ -57,10 +57,13 @@ app.UseCors(policyBuild => {
     policyBuild.AllowAnyMethod();
     policyBuild.AllowAnyHeader();
 });
-app.UseCookiePolicy(new CookiePolicyOptions() 
+app.UseCookiePolicy(new CookiePolicyOptions()
 {
     MinimumSameSitePolicy = SameSiteMode.Strict,
-    Secure = CookieSecurePolicy.Always
+    Secure = CookieSecurePolicy.Always,
+    OnAppendCookie = cookieContext => {
+        cookieContext.CookieOptions.Path = cookieContext.Context.Request.Host.ToString();
+    }
 });
 app.UseAuthentication();
 app.UseRouting();
