@@ -12,7 +12,7 @@ import { UIService } from '../shared/UIService';
 @Component({
   selector: 'app-candidate-profile',
   templateUrl: './candidate-profile.component.html',
-  styleUrls: ['./candidate-profile.component.css'],
+  styleUrls: ['./candidate-profile.component.css']
 })
 export class CandidateProfileComponent implements OnInit, OnDestroy {
   newProfile:boolean = false;

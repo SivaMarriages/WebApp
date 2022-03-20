@@ -6,7 +6,8 @@ import { UIService } from "../shared/UIService";
 
 @Component({
   selector: 'app-candidate-photos',
-  templateUrl: './candidate-photos.component.html'
+  templateUrl: './candidate-photos.component.html',
+  styleUrls: ['./candidate-photos.component.css']
 })
 export class CandidatePhotosComponent implements OnInit{
   profileId:string = '';
