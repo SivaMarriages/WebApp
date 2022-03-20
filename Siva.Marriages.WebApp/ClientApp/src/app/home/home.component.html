@@ -1,18 +1,18 @@
-<div style="text-align: right;">
-  <a class="nav-link text-dark" [routerLink]="['/new-profile']">
-    <button class="form-actions actions" mat-raised-button color="accent">New Profile
-      <mat-icon>add</mat-icon>
-    </button>
-  </a>
+<div style="margin: 10px 0px 30px 0px;">
+  <button [routerLink]="['/new-profile']" class="form-actions actions" mat-raised-button color="accent">New Profile
+    <mat-icon>add</mat-icon>
+  </button>
 </div>
 <mat-form-field style="width: 100%;">
-  <input type="text" matInput (change)="applyFilter($event)" placeholder="Search">
-  <mat-icon matSuffix>search</mat-icon>
+  <input matInput type="text" [(ngModel)]="filterText" placeholder="Search">
+  <button matSuffix mat-icon-button aria-label="search" (click)="applyFilter()">
+    <mat-icon>search</mat-icon>
+  </button>
+  <!-- <mat-icon matSuffix>search</mat-icon> -->
 </mat-form-field>
 <mat-card style="text-align: center;margin-bottom: 10px;" [routerLink]="['view-profile', profile.id]"
   *ngFor="let profile of filterdProfiles">
   <mat-card-title>
-    <mat-icon>{{profile.data.gender.toString() === 'Male' ? 'boy':'girl'}}</mat-icon>
     <p>{{profile.data.name + ' ' + profile.data.surname}}</p>
     <p>
       {{getProfileAge(profile.data)}}
@@ -20,10 +20,10 @@
   </mat-card-title>
   <img *ngIf="profile.picturesId.length !== 0" mat-card-md-image src="{{getProfilePictureUrl(profile.picturesId)}}">
   <mat-card-content>
-    <p>{{profile.data.profession.designation + ', ' + profile.data.profession.salary}}</p>
-    <p>{{profile.data.nativePlace + ', ' + profile.data.education.name}}</p>
+    <p *ngIf="profile.data.profession.salary !== ''">{{profile.data.profession.salary}}</p>
+    <p>{{getWorkDetails(profile.data.profession)}}</p>
+    <p>{{profile.data.education.name}}</p>
     <p>{{getCardBirth(profile.data.birthDetails)}}</p>
-    <p>{{getParents(profile.data)}}</p>
   </mat-card-content>
 </mat-card>
 <div *ngIf="filterdProfiles.length == 0" style="text-align: center;">
