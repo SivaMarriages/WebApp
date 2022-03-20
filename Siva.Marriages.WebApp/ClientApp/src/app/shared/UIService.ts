@@ -40,12 +40,6 @@ export class UIService {
 
   public showToast(messageObj: any) {
     const message = JSON.stringify(messageObj);
-    this.snackBar.open(message, undefined, {
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      politeness: 'assertive',
-      duration: 5 * 1000,
-      panelClass: 'errorMessage'
-    });
+    this.snackBar.open(message, 'close');
   }
 }

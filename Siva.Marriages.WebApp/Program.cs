@@ -52,6 +52,11 @@ if (!app.Environment.IsDevelopment())
 //});
 
 app.UseHttpsRedirection();
+app.UseCors(policyBuild => {
+    policyBuild.AllowAnyOrigin();
+    policyBuild.AllowAnyMethod();
+    policyBuild.AllowAnyHeader();
+});
 app.UseCookiePolicy(new CookiePolicyOptions() 
 {
     MinimumSameSitePolicy = SameSiteMode.Strict,
