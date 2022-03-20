@@ -236,8 +236,21 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     await this.router.navigate([routesConstants.HOME]);
   }
 
-  async onPrint():Promise<void>{
-    window.print();
+  async onShare(): Promise<void> {
+    try {
+      this.uiService.showSpinner();
+      const files: File[] = [];
+      this.imageObject.forEach(async (img, idx) => {
+        const image = await fetch(img.image);
+        const blob = await image.blob();
+        files.push(new File([blob], `${idx}.jpg`, { type: 'image/jpeg' }));
+      });
+      this.uiService.stopSpinner();
+      await navigator.share({ text: 'photos', files: files });
+    }
+    finally{
+      this.uiService.stopSpinner();
+    }
   }
 
   get getNonPrimePhotos(){
