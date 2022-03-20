@@ -248,6 +248,9 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
       this.uiService.stopSpinner();
       await navigator.share({ text: 'photos', files: files });
     }
+    catch(err){
+      this.uiService.showToast(err);
+    }
     finally{
       this.uiService.stopSpinner();
     }
