@@ -246,7 +246,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
         files.push(new File([blob], `${idx}.jpg`, { type: 'image/jpeg' }));
       }
       this.uiService.stopSpinner();
-      await navigator.share({ text: 'photos', files: files });
+      await window.navigator.share({ files: files });
     }
     catch(err){
       this.uiService.showToast(err);
