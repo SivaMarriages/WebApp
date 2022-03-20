@@ -40,6 +40,6 @@ export class UIService {
 
   public showToast(messageObj: any) {
     const message = JSON.stringify(messageObj);
-    this.snackBar.open(message, 'close');
+    this.snackBar.open(message, 'X');
   }
 }
