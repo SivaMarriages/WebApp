@@ -29,6 +29,8 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
   maritalStatuses:string[];
   elderStatuses: string[];
 
+  profileData:ProfileData = <ProfileData>{};
+
   profileForm = this.fb.group({
     name: ['', Validators.required],
     surname: ['', Validators.required],
@@ -127,6 +129,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           for(let i =0; i<profile.data.siblings.length; i++){
             this.addSibling();
           }
+          this.profileData = profile.data;
           this.profileForm.setValue(profile.data);
           this.newProfile = false;
           this.editMode = false;
@@ -142,6 +145,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           for(let i =0; i<profile.data.siblings.length; i++){
             this.addSibling();
           }
+          this.profileData = profile.data;
           this.profileForm.setValue(profile.data);
           this.newProfile = false;
           this.editMode = true;
@@ -239,14 +243,14 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
   async onShare(): Promise<void> {
     try {
       this.uiService.showSpinner();
-      const files: File[] = [];
+      let photos: File[] = [];
       for (let idx = 0; idx < this.imageObject.length; idx++) {
         const image = await fetch(this.imageObject[idx].image);
         const blob = await image.blob();
-        files.push(new File([blob], `${idx}.jpg`, { type: 'image/jpeg' }));
+        photos.push(new File([blob], `${idx}.jpg`, { type: 'image/jpeg' }));
       }
       this.uiService.stopSpinner();
-      await window.navigator.share({ files: files });
+      await navigator.share({ title: this.profileData.name, text: this.profileData.name, files: photos });
     }
     catch(err){
       this.uiService.showToast(err);

@@ -20,7 +20,7 @@ namespace Siva.Marriages.WebApp.Controllers
         [HttpGet("{photoId}")]
         public IActionResult Get(string photoId)
         {
-            return File(profilePicturesOperations.GetPictureById(photoId), "application/octet-stream");
+            return File(profilePicturesOperations.GetPictureById(photoId), "image/jpeg");
         }
 
         [HttpGet("{profileId}/{photoId}")]
