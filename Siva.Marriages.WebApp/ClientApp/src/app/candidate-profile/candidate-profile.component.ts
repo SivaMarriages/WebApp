@@ -243,14 +243,14 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
   async onShare(): Promise<void> {
     try {
       this.uiService.showSpinner();
-      let photos: File[] = [];
       for (let idx = 0; idx < this.imageObject.length; idx++) {
+        let photos: File[] = [];
         const image = await fetch(this.imageObject[idx].image);
         const blob = await image.blob();
         photos.push(new File([blob], `${idx}.jpg`, { type: 'image/jpeg' }));
+        await window.navigator.share({ title: this.profileData.name, text: this.profileData.name, files: photos });
       }
       this.uiService.stopSpinner();
-      await navigator.share({ title: this.profileData.name, text: this.profileData.name, files: photos });
     }
     catch(err){
       this.uiService.showToast(err);
