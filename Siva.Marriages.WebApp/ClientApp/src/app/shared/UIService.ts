@@ -38,8 +38,22 @@ export class UIService {
     }
   }
 
-  public showToast(messageObj: any) {
+  public showToast(message: string) {
+    this.snackBar.open(message, undefined, {
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      politeness: 'assertive',
+      duration: 5 * 1000
+    });
+  }
+  public showErrorToast(messageObj: any) {
     const message = JSON.stringify(messageObj);
-    this.snackBar.open(message, 'X');
+    this.snackBar.open(message, undefined, {
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      politeness: 'assertive',
+      duration: 5 * 1000,
+      panelClass: 'errorMessage'
+    });
   }
 }

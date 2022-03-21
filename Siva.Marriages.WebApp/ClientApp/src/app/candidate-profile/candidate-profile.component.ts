@@ -134,7 +134,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           this.newProfile = false;
           this.editMode = false;
           this.profileForm.disable();
-        }, err => this.uiService.showToast(err));
+        }, err => this.uiService.showErrorToast(err));
       }else if(urlSegs[0].path === 'edit-profile'){
         this.profileId = urlSegs[1].path;
         this.profileService.GetProfile(this.profileId).then(profile => {
@@ -150,7 +150,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           this.newProfile = false;
           this.editMode = true;
           this.profileForm.enable();
-        }, err => this.uiService.showToast(err));
+        }, err => this.uiService.showErrorToast(err));
       }
     });
   }
@@ -248,12 +248,16 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
         const image = await fetch(this.imageObject[idx].image);
         const blob = await image.blob();
         photos.push(new File([blob], `${idx}.jpg`, { type: 'image/jpeg' }));
-        await window.navigator.share({ title: this.profileData.name, text: this.profileData.name, files: photos });
+        try{
+          await window.navigator.share({ title: this.profileData.name, text: this.profileData.name, files: photos });
+        }
+        catch(err){
+          this.uiService.showErrorToast(err);
+        }
       }
-      this.uiService.stopSpinner();
     }
     catch(err){
-      this.uiService.showToast(err);
+      this.uiService.showErrorToast(err);
     }
     finally{
       this.uiService.stopSpinner();

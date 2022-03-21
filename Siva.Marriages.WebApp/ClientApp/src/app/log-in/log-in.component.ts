@@ -32,7 +32,7 @@ export class LogInComponent {
     }
     catch (excep) {
       await this.router.navigate([routesConstants.LOGIN]);
-      this.uiService.showToast("InValid Credentials!");
+      this.uiService.showErrorToast("InValid Credentials!");
       throw excep;
     }
   }

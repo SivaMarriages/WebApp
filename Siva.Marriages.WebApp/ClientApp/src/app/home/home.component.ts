@@ -52,7 +52,7 @@ export class HomeComponent {
       this.profiles = data;
       this.filterdProfiles = data;
       this.profilesDataStr = data.map(p => this.dataStr(p.data));
-    }, err => this.uiService.showToast(err));
+    }, err => this.uiService.showErrorToast(err));
   }
 
   getProfileAge(data: ProfileData): string {
