@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CandidateProfile, ProfileData } from '../models/profile';
-import { ProfileService, routesConstants, UIService } from '../shared';
+import { Format, ProfileService, routesConstants, UIService } from '../shared';
 import { Zodiac, Nakshatra, Marital, Elder } from '../models/profile';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -289,44 +289,93 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
 
   getShareData(profileData: ProfileData): string {
     let indentation = 0
-    let linFn = (key:string, value:string):string => {
-      return `${' '.repeat(indentation*4)}${key} : ${value}\n`;
+    let linFn = (key: string, value: string): string => {
+      return `${' '.repeat(indentation * 4)}${key} : ${value}\n`;
     }
     let data = "";
     this.getHeader.forEach(header => {
       data += header + "\n";
     });
     data += "\n\n\n\n\n";
-    data += linFn("Name", profileData.name);
-    data += linFn("Surname", profileData.surname);
-    data += linFn("MotherMaidenname", profileData.motherMaidenname);
-    data += linFn("NativePlace", profileData.nativePlace);
+    if(profileData.name !== ""){
+      data += linFn("Name", profileData.name);
+    }
+    if(profileData.surname !== ""){
+      data += linFn("Surname", profileData.surname);
+    }
+    if(profileData.motherMaidenname !== ""){
+      data += linFn("MotherMaidenname", profileData.motherMaidenname);
+    }
+    if(profileData.nativePlace !== ""){
+      data += linFn("NativePlace", profileData.nativePlace);
+    }
+
     data += linFn("BirthDetails", "");
     indentation++;
-    data += linFn("DateOfBirth", profileData.birthDetails.dateOfBirth);
-    data += linFn("TimeOfBirth", profileData.birthDetails.timeOfBirth);
-    data += linFn("PlaceOfBirth", profileData.birthDetails.placeOfBirth);
-    data += linFn("Rasi", profileData.birthDetails.rasi.toString());
-    data += linFn("Nakshatra", profileData.birthDetails.nakshatra.toString());
+
+    if (profileData.birthDetails.dateOfBirth !== "") {
+      data += linFn("DateOfBirth", (new Date(profileData.birthDetails.dateOfBirth)).toDateString());
+    }
+    if (profileData.birthDetails.timeOfBirth !== "") {
+      data += linFn("TimeOfBirth", Format.Time(profileData.birthDetails.timeOfBirth));
+    }
+    if(profileData.birthDetails.placeOfBirth !== ""){
+      data += linFn("PlaceOfBirth", profileData.birthDetails.placeOfBirth);
+    }
+    if(profileData.birthDetails.rasi.toString() !== ""){
+      data += linFn("Rasi", profileData.birthDetails.rasi.toString());
+    }
+    if(profileData.birthDetails.nakshatra.toString() !== ""){
+      data += linFn("Nakshatra", profileData.birthDetails.nakshatra.toString());
+    }
     indentation--;
+
     data += linFn("Profession", "");
     indentation++;
-    data += linFn("Designation", profileData.profession.designation);
-    data += linFn("CompanyName", profileData.profession.companyName);
-    data += linFn("Salary", profileData.profession.salary);
-    data += linFn("Place", profileData.profession.place);
+
+    if(profileData.profession.designation !== ""){
+      data += linFn("Designation", profileData.profession.designation);
+    }
+    if(profileData.profession.companyName !== ""){
+      data += linFn("CompanyName", profileData.profession.companyName);
+    }
+    if(profileData.profession.salary !== ""){
+      data += linFn("Salary", profileData.profession.salary);
+    }
+    if(profileData.profession.place !== ""){
+      data += linFn("Place", profileData.profession.place);
+    }
     indentation--;
+
     data += linFn("Education", "");
     indentation++;
-    data += linFn("Qualification", profileData.education.name);
-    data += linFn("Institute", profileData.education.institute);
-    data += linFn("Place", profileData.education.location);
+
+    if(profileData.education.name !== ""){
+      data += linFn("Qualification", profileData.education.name);
+    }
+    if(profileData.education.institute !== ""){
+      data += linFn("Institute", profileData.education.institute);
+    }
+    if(profileData.education.location !== ""){
+      data += linFn("Place", profileData.education.location);
+    }
     indentation--;
-    data += linFn("Height", profileData.height);
-    data += linFn("OtherDetails", profileData.otherDetails);
+
+    if(profileData.height !== ""){
+      data += linFn("Height", profileData.height);
+    }
+    if(profileData.otherDetails !== ""){
+      data += linFn("OtherDetails", profileData.otherDetails);
+    }
+
     data += "\n\n";
-    data += linFn("Father", profileData.father);
-    data += linFn("Mother", profileData.mother);
+    if(profileData.father !== ""){
+      data += linFn("Father", profileData.father);
+    }
+    if(profileData.mother !== ""){
+      data += linFn("Mother", profileData.mother);
+    }
+
     data += "\n\n";
     profileData.siblings.forEach((sibling, idx) => {
       data += linFn(`Sibling ${idx + 1}`, sibling.details);

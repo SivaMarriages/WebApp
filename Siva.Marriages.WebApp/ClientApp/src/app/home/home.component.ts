@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BirthDetails, CandidateProfile, Profession, ProfileData } from '../models/profile';
-import { ProfileService, UIService } from '../shared';
+import { Format, ProfileService, UIService } from '../shared';
 
 @Component({
   selector: 'app-home',
@@ -81,7 +81,7 @@ export class HomeComponent implements OnInit {
       ret += (new Date(data.dateOfBirth)).toDateString() + ", ";
     }
     if (data.timeOfBirth !== "") {
-      ret += data.timeOfBirth + ", ";
+      ret += Format.Time(data.timeOfBirth) + ", ";
     }
     if (data.rasi !== undefined && data.rasi.toString() !== "") {
       ret += data.rasi + ", ";
