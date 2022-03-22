@@ -1,11 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { NgxViewerModule } from 'ngx-viewer';
 
-import { AppRoutes } from './shared/routes.constants';
+import { AppRoutes, DialogElementsExampleDialog, JwtInterceptor, ErrorInterceptor } from './shared';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
@@ -13,7 +13,6 @@ import { LogInComponent } from './log-in/log-in.component';
 import { CandidateProfileComponent } from './candidate-profile/candidate-profile.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatModule } from './mat.module';
-import { DialogElementsExampleDialog } from './shared/can-deactivate.guard';
 import { CandidatePhotosComponent } from './candidate-photos/candidate-photos.component';
 
 @NgModule({
@@ -36,7 +35,10 @@ import { CandidatePhotosComponent } from './candidate-photos/candidate-photos.co
     MatModule,
     NgxViewerModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

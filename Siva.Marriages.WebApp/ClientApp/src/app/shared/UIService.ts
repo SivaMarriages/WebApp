@@ -52,8 +52,7 @@ export class UIService {
       horizontalPosition: 'center',
       verticalPosition: 'top',
       politeness: 'assertive',
-      duration: 5 * 1000,
-      panelClass: 'errorMessage'
+      duration: 5 * 1000
     });
   }
 }

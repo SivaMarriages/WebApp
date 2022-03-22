@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CandidateProfile, ProfileData } from '../models/profile';
-import { UIService } from './UIService';
+import { UIService } from './';
 
 @Injectable({
   providedIn: 'root'

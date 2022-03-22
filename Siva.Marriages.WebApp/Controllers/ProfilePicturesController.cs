@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Siva.Marriages.WebApp.Helpers;
 
 namespace Siva.Marriages.WebApp.Controllers
 {

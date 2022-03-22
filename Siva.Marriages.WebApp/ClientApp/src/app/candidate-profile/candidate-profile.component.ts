@@ -1,13 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProfileData } from '../models/profile';
-import { ProfileService } from '../shared/profile.service';
+import { ProfileService, routesConstants, UIService } from '../shared';
 import { Zodiac, Nakshatra, Marital, Elder } from '../models/profile';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
-import { routesConstants } from '../shared/routes.constants';
-import { UIService } from '../shared/UIService';
 
 @Component({
   selector: 'app-candidate-profile',
@@ -15,21 +13,21 @@ import { UIService } from '../shared/UIService';
   styleUrls: ['./candidate-profile.component.css']
 })
 export class CandidateProfileComponent implements OnInit, OnDestroy {
-  newProfile:boolean = false;
-  editMode:boolean = false;
-  sub:any;
-  profileId:string = "";
-  imageObject:{image:string, thumbImage:string}[] = [];
+  newProfile: boolean = false;
+  editMode: boolean = false;
+  sub: any;
+  profileId: string = "";
+  imageObject: { image: string, thumbImage: string }[] = [];
 
   zodiacSigns: string[];
   filterZodiacSigns: Observable<string[]>;
   nakshatras: string[];
-  filterNakshatras:Observable<string[]>;
-  maxYear:number = (new Date()).getFullYear() + 6;
-  maritalStatuses:string[];
+  filterNakshatras: Observable<string[]>;
+  maxYear: number = (new Date()).getFullYear() + 6;
+  maritalStatuses: string[];
   elderStatuses: string[];
 
-  profileData:ProfileData = <ProfileData>{};
+  profileData: ProfileData = <ProfileData>{};
 
   profileForm = this.fb.group({
     name: ['', Validators.required],
@@ -66,7 +64,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     mother: ['', Validators.required],
     siblings: this.fb.array([])
   });
-  constructor(private fb: FormBuilder, private profileService: ProfileService, private router: Router, private route:ActivatedRoute, private uiService:UIService) {
+  constructor(private fb: FormBuilder, private profileService: ProfileService, private router: Router, private route: ActivatedRoute, private uiService: UIService) {
     this.zodiacSigns = [];
     for (const [name, strValue] of Object.entries(Zodiac)) {
       const value = Number(strValue)
@@ -116,17 +114,17 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.sub = this.route.url.subscribe(urlSegs => {
-      if(urlSegs[0].path === 'new-profile'){
+      if (urlSegs[0].path === 'new-profile') {
         this.newProfile = true;
         this.editMode = true;
-      }else if(urlSegs[0].path === 'view-profile'){
+      } else if (urlSegs[0].path === 'view-profile') {
         this.profileId = urlSegs[1].path;
         this.profileService.GetProfile(this.profileId).then(profile => {
           this.imageObject = profile.picturesId.map(id => {
-            return {image:"api/ProfilePictures/"+id, thumbImage:"api/ProfilePictures/"+id}
+            return { image: "api/ProfilePictures/" + id, thumbImage: "api/ProfilePictures/" + id }
           });
           this.resetSiblingsGroup();
-          for(let i =0; i<profile.data.siblings.length; i++){
+          for (let i = 0; i < profile.data.siblings.length; i++) {
             this.addSibling();
           }
           this.profileData = profile.data;
@@ -135,14 +133,14 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           this.editMode = false;
           this.profileForm.disable();
         }, err => this.uiService.showErrorToast(err));
-      }else if(urlSegs[0].path === 'edit-profile'){
+      } else if (urlSegs[0].path === 'edit-profile') {
         this.profileId = urlSegs[1].path;
         this.profileService.GetProfile(this.profileId).then(profile => {
           this.imageObject = profile.picturesId.map(id => {
-            return {image:"api/ProfilePictures/"+id, thumbImage:"api/ProfilePictures/"+id}
+            return { image: "api/ProfilePictures/" + id, thumbImage: "api/ProfilePictures/" + id }
           });
           this.resetSiblingsGroup();
-          for(let i =0; i<profile.data.siblings.length; i++){
+          for (let i = 0; i < profile.data.siblings.length; i++) {
             this.addSibling();
           }
           this.profileData = profile.data;
@@ -169,7 +167,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     return (this.profileForm.get('siblings') as FormArray).controls as FormGroup[];
   }
 
-  resetSiblingsGroup():void{
+  resetSiblingsGroup(): void {
     this.profileForm.setControl('siblings', this.fb.array([]));
   }
 
@@ -183,15 +181,15 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     this.siblingsGroup.splice(index, 1);
   }
 
-  async onEdit():Promise<void>{
+  async onEdit(): Promise<void> {
     await this.router.navigate([routesConstants.EDITPROFILE, this.profileId]);
   }
 
-  async onEditPhotos():Promise<void>{
+  async onEditPhotos(): Promise<void> {
     await this.router.navigate([routesConstants.PHOTOS, this.profileId]);
   }
 
-  async onDelete():Promise<void>{
+  async onDelete(): Promise<void> {
     await this.profileService.DeleteProfile(this.profileId);
     await this.router.navigate([routesConstants.HOME]);
     this.uiService.showToast('Deleted Profile Successfully!');
@@ -209,7 +207,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           }
         })) {
         if (this.newProfile) {
-          const profileId =  await this.profileService.CreateProfile(this.profileForm.getRawValue());
+          const profileId = await this.profileService.CreateProfile(this.profileForm.getRawValue());
           this.profileForm.reset();
           await this.router.navigate([routesConstants.VIEWPROFILE, profileId]);
         } else {
@@ -228,56 +226,61 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onCancel():Promise<void>{
-    if(this.newProfile){
+  async onCancel(): Promise<void> {
+    if (this.newProfile) {
       await this.router.navigate([routesConstants.HOME]);
-    }else{
+    } else {
       await this.router.navigate([routesConstants.VIEWPROFILE, this.profileId]);
     }
   }
 
-  async onReturn():Promise<void>{
+  async onReturn(): Promise<void> {
     await this.router.navigate([routesConstants.HOME]);
   }
 
   async onShare(): Promise<void> {
     try {
       this.uiService.showSpinner();
-      for (let idx = 0; idx < this.imageObject.length; idx++) {
-        let photos: File[] = [];
-        const image = await fetch(this.imageObject[idx].image);
-        const blob = await image.blob();
-        photos.push(new File([blob], `${idx}.jpg`, { type: 'image/jpeg' }));
-        try{
-          await window.navigator.share({ title: this.profileData.name, text: this.profileData.name, files: photos });
-        }
-        catch(err){
-          this.uiService.showErrorToast(err);
-        }
-      }
+      let photos: File[] = [];
+      const image = await fetch(this.imageObject[0].image);
+      const blob = await image.blob();
+      photos.push(new File([blob], `0.jpg`, { type: 'image/jpeg', endings: 'native' }));
+      await window.navigator.share({ text: this.getShareData(this.profileData), files: photos });
     }
-    catch(err){
+    catch (err) {
       this.uiService.showErrorToast(err);
     }
-    finally{
+    finally {
       this.uiService.stopSpinner();
     }
   }
 
-  get getNonPrimePhotos(){
+  get getNonPrimePhotos() {
     return this.imageObject.filter((x, i) => i !== 0);
   }
 
-  get getHeader(){
+  get getHeader() {
     return [
-    "🙏పరిచయం మాది వివరణామిది🙏",
-  "🙏వధువు, వరుడు ల గుణ గుణాలు మరియు వారి ఫ్యామిలీ మంచి చెడులు తెలుసుకోవాల్సిన బాధ్యత మీది🙏"];
+      "🙏పరిచయం మాది వివరణామిది🙏",
+      "🙏వధువు, వరుడు ల గుణ గుణాలు మరియు వారి ఫ్యామిలీ మంచి చెడులు తెలుసుకోవాల్సిన బాధ్యత మీది🙏"];
   }
 
-  get getFooter(){
+  get getFooter() {
     return ["ఇట్లు,",
-    "వల్లూరి శివ కుమార్ ప్రజాపతి - 9032055444",
-    "పరిచయం మాది వివరణామిది",
-  "వధువు, వరుడు ల గుణ గుణాలు మరియు వారి ఫ్యామిలీ మంచి చెడులు తెలుసుకోవాల్సిన బాధ్యత మీది"];
+      "వల్లూరి శివ కుమార్ ప్రజాపతి - 9032055444",
+      "పరిచయం మాది వివరణామిది",
+      "వధువు, వరుడు ల గుణ గుణాలు మరియు వారి ఫ్యామిలీ మంచి చెడులు తెలుసుకోవాల్సిన బాధ్యత మీది"];
+  }
+
+  getShareData(profileData: ProfileData): string {
+    let data = "";
+    this.getHeader.forEach(header => {
+      data += header + "\n";
+    });
+    data += profileData.name + "\n";
+    this.getFooter.forEach(header => {
+      data += header + "\n";
+    });
+    return data
   }
 }

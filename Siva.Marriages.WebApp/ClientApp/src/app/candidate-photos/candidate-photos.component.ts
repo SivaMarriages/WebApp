@@ -1,8 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ProfileService } from "../shared/profile.service";
-import { routesConstants } from "../shared/routes.constants";
-import { UIService } from "../shared/UIService";
+import { UIService, ProfileService, routesConstants } from "../shared";
 
 @Component({
   selector: 'app-candidate-photos',

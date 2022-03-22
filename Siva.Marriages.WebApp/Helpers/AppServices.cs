@@ -10,6 +10,8 @@ namespace Siva.Marriages.WebApp.Helpers
     {
         public static void AddAppServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddCors();
+            services.AddControllers();
             services.AddSingleton<GDriveProvider>();
             services.AddDbContext<PGSqlDbContext>(options =>
             {

@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BirthDetails, CandidateProfile, Profession, ProfileData } from '../models/profile';
-import { ProfileService } from '../shared/profile.service';
-import { UIService } from '../shared/UIService';
+import { ProfileService, UIService } from '../shared';
 
 @Component({
   selector: 'app-home',
