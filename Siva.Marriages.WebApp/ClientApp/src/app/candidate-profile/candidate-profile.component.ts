@@ -294,20 +294,20 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     }
     let data = "";
     this.getHeader.forEach(header => {
-      data += header + "\n\n\n\n\n";
+      data += header + "\n";
     });
+    data += "\n\n\n\n\n";
     data += linFn("Name", profileData.name);
     data += linFn("Surname", profileData.surname);
     data += linFn("MotherMaidenname", profileData.motherMaidenname);
     data += linFn("NativePlace", profileData.nativePlace);
-    data += linFn("NativePlace", profileData.nativePlace);
     data += linFn("BirthDetails", "");
     indentation++;
     data += linFn("DateOfBirth", profileData.birthDetails.dateOfBirth);
-    data += linFn("TimeOfBirth", profileData.birthDetails.dateOfBirth);
-    data += linFn("PlaceOfBirth", profileData.birthDetails.dateOfBirth);
-    data += linFn("Rasi", profileData.birthDetails.dateOfBirth);
-    data += linFn("Nakshatra", profileData.birthDetails.dateOfBirth);
+    data += linFn("TimeOfBirth", profileData.birthDetails.timeOfBirth);
+    data += linFn("PlaceOfBirth", profileData.birthDetails.placeOfBirth);
+    data += linFn("Rasi", profileData.birthDetails.rasi.toString());
+    data += linFn("Nakshatra", profileData.birthDetails.nakshatra.toString());
     indentation--;
     data += linFn("Profession", "");
     indentation++;
@@ -331,9 +331,9 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     profileData.siblings.forEach((sibling, idx) => {
       data += linFn(`Sibling ${idx + 1}`, sibling.details);
     });
-    data += "\n\n\n\n\n"
-    this.getFooter.forEach(header => {
-      data += header + "\n";
+    data += "\n\n\n\n\n";
+    this.getFooter.forEach(footer => {
+      data += footer + "\n";
     });
     return data
   }
