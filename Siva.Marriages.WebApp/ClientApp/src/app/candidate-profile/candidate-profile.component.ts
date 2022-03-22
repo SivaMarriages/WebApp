@@ -288,11 +288,50 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
   }
 
   getShareData(profileData: ProfileData): string {
+    let indentation = 0
+    let linFn = (key:string, value:string):string => {
+      return `${' '.repeat(indentation*4)}${key} : ${value}\n`;
+    }
     let data = "";
     this.getHeader.forEach(header => {
-      data += header + "\n";
+      data += header + "\n\n\n\n\n";
     });
-    data += profileData.name + "\n";
+    data += linFn("Name", profileData.name);
+    data += linFn("Surname", profileData.surname);
+    data += linFn("MotherMaidenname", profileData.motherMaidenname);
+    data += linFn("NativePlace", profileData.nativePlace);
+    data += linFn("NativePlace", profileData.nativePlace);
+    data += linFn("BirthDetails", "");
+    indentation++;
+    data += linFn("DateOfBirth", profileData.birthDetails.dateOfBirth);
+    data += linFn("TimeOfBirth", profileData.birthDetails.dateOfBirth);
+    data += linFn("PlaceOfBirth", profileData.birthDetails.dateOfBirth);
+    data += linFn("Rasi", profileData.birthDetails.dateOfBirth);
+    data += linFn("Nakshatra", profileData.birthDetails.dateOfBirth);
+    indentation--;
+    data += linFn("Profession", "");
+    indentation++;
+    data += linFn("Designation", profileData.profession.designation);
+    data += linFn("CompanyName", profileData.profession.companyName);
+    data += linFn("Salary", profileData.profession.salary);
+    data += linFn("Place", profileData.profession.place);
+    indentation--;
+    data += linFn("Education", "");
+    indentation++;
+    data += linFn("Qualification", profileData.education.name);
+    data += linFn("Institute", profileData.education.institute);
+    data += linFn("Place", profileData.education.location);
+    indentation--;
+    data += linFn("Height", profileData.height);
+    data += linFn("OtherDetails", profileData.otherDetails);
+    data += "\n\n";
+    data += linFn("Father", profileData.father);
+    data += linFn("Mother", profileData.mother);
+    data += "\n\n";
+    profileData.siblings.forEach((sibling, idx) => {
+      data += linFn(`Sibling ${idx + 1}`, sibling.details);
+    });
+    data += "\n\n\n\n\n"
     this.getFooter.forEach(header => {
       data += header + "\n";
     });
