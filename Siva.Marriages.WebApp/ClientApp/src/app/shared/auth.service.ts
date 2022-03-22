@@ -8,16 +8,22 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
+  private token:string = "";
+
   private SetToken(token: string) {
+    this.token = token;
     localStorage.setItem('currentToken', token);
   }
 
   public get Token(): string {
-    return localStorage.getItem('currentToken') ?? "";
+    if(this.token === ""){
+      this.token = localStorage.getItem('currentToken') ?? "";
+    }
+    return this.token;
   }
 
   public get isAthenticated(): boolean {
-    return this.Token !== "";
+    return this.token !== "";
   }
 
   constructor(private http: HttpClient) {
