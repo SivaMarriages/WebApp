@@ -65,6 +65,13 @@ export class ProfileService {
     }
   }
 
+  public async GetPicture(id: string): Promise<any> {
+    const blob = await this.http.get('api/ProfilePictures/' + encodeURIComponent(id), {
+      responseType: "blob"
+    }).toPromise();
+    return await this.ConvertBlobToDataUri(blob);
+  }
+
   public async MakePictureAsPrimary(id: string, pictureId: string): Promise<string[]> {
     this.uiService.showSpinner();
     try {
@@ -90,5 +97,15 @@ export class ProfileService {
     } finally {
       this.uiService.stopSpinner();
     }
+  }
+
+  private ConvertBlobToDataUri(blob: Blob): Promise<any> {
+    return new Promise(function (resolve) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.readAsDataURL(blob);
+    });
   }
 }

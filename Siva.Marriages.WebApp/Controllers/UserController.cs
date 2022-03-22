@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Siva.Marriages.WebApp.Controllers
 {
-    [Route("auth/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     [AllowAnonymous]
     public class UserController : ControllerBase

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ProfileData } from '../models/profile';
+import { CandidateProfile, ProfileData } from '../models/profile';
 import { ProfileService, routesConstants, UIService } from '../shared';
 import { Zodiac, Nakshatra, Marital, Elder } from '../models/profile';
 import { Observable } from 'rxjs';
@@ -109,20 +109,21 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
       this.elderStatuses.push(name);
     }
   }
+
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
   }
-  ngOnInit(): void {
-    this.sub = this.route.url.subscribe(urlSegs => {
+
+  async ngOnInit(): Promise<void> {
+    this.sub = this.route.url.subscribe(async urlSegs => {
+      this.uiService.showSpinner();
       if (urlSegs[0].path === 'new-profile') {
         this.newProfile = true;
         this.editMode = true;
       } else if (urlSegs[0].path === 'view-profile') {
         this.profileId = urlSegs[1].path;
-        this.profileService.GetProfile(this.profileId).then(profile => {
-          this.imageObject = profile.picturesId.map(id => {
-            return { image: "api/ProfilePictures/" + id, thumbImage: "api/ProfilePictures/" + id }
-          });
+        try {
+          const profile = await this.profileService.GetProfile(this.profileId);
           this.resetSiblingsGroup();
           for (let i = 0; i < profile.data.siblings.length; i++) {
             this.addSibling();
@@ -132,13 +133,14 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           this.newProfile = false;
           this.editMode = false;
           this.profileForm.disable();
-        }, err => this.uiService.showErrorToast(err));
+          await this.refreshImages(profile.picturesId);
+        } catch (err) {
+          this.uiService.showErrorToast(err)
+        }
       } else if (urlSegs[0].path === 'edit-profile') {
         this.profileId = urlSegs[1].path;
-        this.profileService.GetProfile(this.profileId).then(profile => {
-          this.imageObject = profile.picturesId.map(id => {
-            return { image: "api/ProfilePictures/" + id, thumbImage: "api/ProfilePictures/" + id }
-          });
+        try {
+          const profile = await this.profileService.GetProfile(this.profileId);
           this.resetSiblingsGroup();
           for (let i = 0; i < profile.data.siblings.length; i++) {
             this.addSibling();
@@ -148,9 +150,22 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
           this.newProfile = false;
           this.editMode = true;
           this.profileForm.enable();
-        }, err => this.uiService.showErrorToast(err));
+          this.refreshImages(profile.picturesId).then();
+        } catch (err) {
+          this.uiService.showErrorToast(err)
+        };
       }
+      this.uiService.stopSpinner();
     });
+  }
+
+  private async refreshImages(picturesId: string[]) {
+    const tempImagesObject = [];
+    for (let i = 0; i < picturesId.length; i++) {
+      const picDataUri = await this.profileService.GetPicture(picturesId[i]);
+      tempImagesObject.push({ image: picDataUri, thumbImage: picDataUri });
+    }
+    this.imageObject = tempImagesObject;
   }
 
   private filterZodiacSign(value: string): string[] {

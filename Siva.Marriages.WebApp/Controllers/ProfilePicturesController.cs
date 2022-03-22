@@ -4,6 +4,7 @@ namespace Siva.Marriages.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProfilePicturesController : ControllerBase
     {
         private ProfileOperations profileOperations;
@@ -22,7 +23,6 @@ namespace Siva.Marriages.WebApp.Controllers
         }
 
         [HttpGet("{profileId}/{photoId}")]
-        [Authorize]
         public async Task<IActionResult> Get(Guid profileId, string photoId)
         {
             try
@@ -41,7 +41,6 @@ namespace Siva.Marriages.WebApp.Controllers
 
         // POST api/<ProfilePicturesController>
         [HttpPost("{profileId}")]
-        [Authorize]
         public async Task<IActionResult> Post(Guid profileId)
         {
             var files = Request.Form.Files;
@@ -58,7 +57,6 @@ namespace Siva.Marriages.WebApp.Controllers
 
         // DELETE api/<ProfilePicturesController>/5/1
         [HttpDelete("{profileId}/{photoId}")]
-        [Authorize]
         public async Task<IActionResult> Delete(Guid profileId, string photoId)
         {
             await profilePicturesOperations.RemovePictureFromProfile(profileId, photoId);

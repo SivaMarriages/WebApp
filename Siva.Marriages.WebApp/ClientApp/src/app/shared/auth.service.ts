@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   public logIn(logInForm: any): Observable<void> {
-    return this.http.post<any>('auth/user/login', logInForm).pipe(map(data => {
+    return this.http.post<any>('user/login', logInForm).pipe(map(data => {
       this.SetToken(data.token);
     }));
   }

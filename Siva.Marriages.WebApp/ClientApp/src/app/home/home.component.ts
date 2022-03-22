@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BirthDetails, CandidateProfile, Profession, ProfileData } from '../models/profile';
 import { ProfileService, UIService } from '../shared';
@@ -7,10 +7,10 @@ import { ProfileService, UIService } from '../shared';
   selector: 'app-home',
   templateUrl: './home.component.html',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   filterText = "";
-  profiles: CandidateProfile[];
-  filterdProfiles: CandidateProfile[];
+  profiles: CandidateProfileWithPicture[];
+  filterdProfiles: CandidateProfileWithPicture[];
   profilesDataStr: string[];
   dataStr(data: ProfileData): string {
     let retStr = "";
@@ -47,11 +47,29 @@ export class HomeComponent {
     this.profiles = [];
     this.profilesDataStr = [];
     this.filterdProfiles = [];
-    this.profileService.GetAllProfile(true).then(data => {
-      this.profiles = data;
-      this.filterdProfiles = data;
-      this.profilesDataStr = data.map(p => this.dataStr(p.data));
-    }, err => this.uiService.showErrorToast(err));
+  }
+
+  async ngOnInit(): Promise<void> {
+    try {
+      this.uiService.showSpinner();
+      const promises = (await this.profileService.GetAllProfile(true)).map(async profile => {
+        const profileWithPicture: CandidateProfileWithPicture = <CandidateProfileWithPicture>profile;
+        try {
+          profileWithPicture.profilePic = await this.profileService.GetPicture(profile.picturesId[0]);
+        } catch {
+
+        }
+        return profileWithPicture;
+      });
+      const tempProfileWithPictures = await Promise.all(promises)
+      this.profiles = tempProfileWithPictures;
+      this.filterdProfiles = tempProfileWithPictures;
+    } catch (err) {
+      this.uiService.showErrorToast(err)
+    }
+    finally{
+      this.uiService.stopSpinner();
+    }
   }
 
   getProfileAge(data: ProfileData): string {
@@ -94,9 +112,6 @@ export class HomeComponent {
     }
     return ret;
   }
-  getProfilePictureUrl(data: string[]) {
-    return `api/profilePictures/${data[0]}`;
-  }
 
   applyFilter() {
     const filter = this.filterText.toLowerCase();
@@ -107,4 +122,8 @@ export class HomeComponent {
       }
     }
   }
+}
+
+interface CandidateProfileWithPicture extends CandidateProfile {
+  profilePic: any;
 }

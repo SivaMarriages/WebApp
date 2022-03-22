@@ -18,7 +18,7 @@
       {{getProfileAge(profile.data)}}
     </p>
   </mat-card-title>
-  <img *ngIf="profile.picturesId.length !== 0" mat-card-md-image src="{{getProfilePictureUrl(profile.picturesId)}}">
+  <img *ngIf="profile.picturesId.length !== 0" mat-card-md-image [src]="profile.profilePic">
   <mat-card-content>
     <p *ngIf="profile.data.profession.salary !== ''">{{profile.data.profession.salary}}</p>
     <p>{{getWorkDetails(profile.data.profession)}}</p>
