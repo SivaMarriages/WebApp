@@ -257,9 +257,11 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     try {
       this.uiService.showSpinner();
       let photos: File[] = [];
-      const image = await fetch(this.imageObject[0].image);
-      const blob = await image.blob();
-      photos.push(new File([blob], `0.jpg`, { type: 'image/jpeg', endings: 'native' }));
+      for (let i = 0; i < this.imageObject.length; i++) {
+        const image = await fetch(this.imageObject[i].image);
+        const blob = await image.blob();
+        photos.push(new File([blob], `${i + 1}.jpg`, { type: 'image/jpeg', endings: 'native' }));
+      }
       await window.navigator.share({ text: this.getShareData(this.profileData), files: photos });
     }
     catch (err) {
@@ -283,8 +285,8 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
   get getFooter() {
     return ["ఇట్లు,",
       "వల్లూరి శివ కుమార్ ప్రజాపతి - 9032055444",
-      "పరిచయం మాది వివరణామిది",
-      "వధువు, వరుడు ల గుణ గుణాలు మరియు వారి ఫ్యామిలీ మంచి చెడులు తెలుసుకోవాల్సిన బాధ్యత మీది"];
+      "🙏పరిచయం మాది వివరణామిది🙏",
+      "🙏వధువు, వరుడు ల గుణ గుణాలు మరియు వారి ఫ్యామిలీ మంచి చెడులు తెలుసుకోవాల్సిన బాధ్యత మీది🙏"];
   }
 
   getShareData(profileData: ProfileData): string {
@@ -297,16 +299,16 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
       data += header + "\n";
     });
     data += "\n\n\n\n\n";
-    if(profileData.name !== ""){
+    if (profileData.name !== "") {
       data += linFn("Name", profileData.name);
     }
-    if(profileData.surname !== ""){
+    if (profileData.surname !== "") {
       data += linFn("Surname", profileData.surname);
     }
-    if(profileData.motherMaidenname !== ""){
+    if (profileData.motherMaidenname !== "") {
       data += linFn("MotherMaidenname", profileData.motherMaidenname);
     }
-    if(profileData.nativePlace !== ""){
+    if (profileData.nativePlace !== "") {
       data += linFn("NativePlace", profileData.nativePlace);
     }
 
@@ -319,13 +321,13 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     if (profileData.birthDetails.timeOfBirth !== "") {
       data += linFn("TimeOfBirth", Format.Time(profileData.birthDetails.timeOfBirth));
     }
-    if(profileData.birthDetails.placeOfBirth !== ""){
+    if (profileData.birthDetails.placeOfBirth !== "") {
       data += linFn("PlaceOfBirth", profileData.birthDetails.placeOfBirth);
     }
-    if(profileData.birthDetails.rasi.toString() !== ""){
+    if (profileData.birthDetails.rasi.toString() !== "") {
       data += linFn("Rasi", profileData.birthDetails.rasi.toString());
     }
-    if(profileData.birthDetails.nakshatra.toString() !== ""){
+    if (profileData.birthDetails.nakshatra.toString() !== "") {
       data += linFn("Nakshatra", profileData.birthDetails.nakshatra.toString());
     }
     indentation--;
@@ -333,16 +335,16 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     data += linFn("Profession", "");
     indentation++;
 
-    if(profileData.profession.designation !== ""){
+    if (profileData.profession.designation !== "") {
       data += linFn("Designation", profileData.profession.designation);
     }
-    if(profileData.profession.companyName !== ""){
+    if (profileData.profession.companyName !== "") {
       data += linFn("CompanyName", profileData.profession.companyName);
     }
-    if(profileData.profession.salary !== ""){
+    if (profileData.profession.salary !== "") {
       data += linFn("Salary", profileData.profession.salary);
     }
-    if(profileData.profession.place !== ""){
+    if (profileData.profession.place !== "") {
       data += linFn("Place", profileData.profession.place);
     }
     indentation--;
@@ -350,29 +352,29 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     data += linFn("Education", "");
     indentation++;
 
-    if(profileData.education.name !== ""){
+    if (profileData.education.name !== "") {
       data += linFn("Qualification", profileData.education.name);
     }
-    if(profileData.education.institute !== ""){
+    if (profileData.education.institute !== "") {
       data += linFn("Institute", profileData.education.institute);
     }
-    if(profileData.education.location !== ""){
+    if (profileData.education.location !== "") {
       data += linFn("Place", profileData.education.location);
     }
     indentation--;
 
-    if(profileData.height !== ""){
+    if (profileData.height !== "") {
       data += linFn("Height", profileData.height);
     }
-    if(profileData.otherDetails !== ""){
+    if (profileData.otherDetails !== "") {
       data += linFn("OtherDetails", profileData.otherDetails);
     }
 
     data += "\n\n";
-    if(profileData.father !== ""){
+    if (profileData.father !== "") {
       data += linFn("Father", profileData.father);
     }
-    if(profileData.mother !== ""){
+    if (profileData.mother !== "") {
       data += linFn("Mother", profileData.mother);
     }
 
