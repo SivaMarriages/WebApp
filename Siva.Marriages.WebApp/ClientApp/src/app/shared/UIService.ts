@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class UIService {
 
   private spinnerTopRef = this.cdkSpinnerCreate();
+  private spinnerCount:number = 0;
 
   constructor(private overlay: Overlay, private snackBar: MatSnackBar) {
   }
@@ -27,25 +28,34 @@ export class UIService {
   }
 
   public showSpinner() {
+    this.spinnerCount++;
     if (!this.spinnerTopRef.hasAttached()) {
       this.spinnerTopRef.attach(new ComponentPortal(MatSpinner));
     }
   }
 
   public stopSpinner() {
-    if (this.spinnerTopRef.hasAttached()) {
+    this.spinnerCount--;
+    if (this.spinnerTopRef.hasAttached() && this.spinnerCount === 0) {
       this.spinnerTopRef.detach();
     }
   }
 
-  public showToast(messageObj: any) {
-    const message = JSON.stringify(messageObj);
+  public showToast(message: string) {
     this.snackBar.open(message, undefined, {
-      horizontalPosition: 'right',
+      horizontalPosition: 'center',
       verticalPosition: 'top',
       politeness: 'assertive',
-      duration: 5 * 1000,
-      panelClass: 'errorMessage'
+      duration: 5 * 1000
+    });
+  }
+  public showErrorToast(messageObj: any) {
+    const message = JSON.stringify(messageObj);
+    this.snackBar.open(message, undefined, {
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      politeness: 'assertive',
+      duration: 5 * 1000
     });
   }
 }

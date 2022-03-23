@@ -1,30 +1,20 @@
 .form__field{
   margin: 0 12px;
 }
+
 .cardContent{
   text-align: center;
 }
 
-@media screen {
-  .noscreen{
-    display: none;
-  }
-  .formViewContainer{
-    max-height: 56vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  .formEditContainer{
-    max-height: 89vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
+.formViewContainer{
+  max-height: calc(100vh - 438px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
-
-@media print {
-  .noprint {
-    display: none;
- }
+.formEditContainer{
+  max-height: calc(100vh - 105px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 mat-card{

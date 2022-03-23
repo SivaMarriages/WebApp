@@ -9,18 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAppServices(builder.Configuration);
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-//builder.Services.Configure<ApiBehaviorOptions>(options =>
-//                {
-//                    Request.Body.Position = 0;
-//                    string mappingsFile = await new StreamReader(Request.Body).ReadToEndAsync();
-//                    // Prevents auto model binding validation. Uncomment if you have custom validation logic
-//                    options.SuppressModelStateInvalidFilter = true;
-//                });
-
-builder.Services.AddControllersWithViews(options => { 
-    //options.va
-});
 
 if (!builder.Environment.IsDevelopment())
 {
@@ -45,21 +33,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Uncomment for model bind debug
-//app.Use(async (context, next) => {
-//    context.Request.EnableBuffering();
-//    await next();
-//});
-
 app.UseHttpsRedirection();
-app.UseCookiePolicy(new CookiePolicyOptions() 
-{
-    MinimumSameSitePolicy = SameSiteMode.Strict,
-    Secure = CookieSecurePolicy.Always
-});
-app.UseAuthentication();
-app.UseRouting();
-app.UseAuthorization();
+
+app.UseCors(x => x
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+
+app.UseMiddleware<JwtMiddleware>();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseResponseCompression();

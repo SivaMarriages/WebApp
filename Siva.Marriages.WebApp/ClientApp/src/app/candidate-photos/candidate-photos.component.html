@@ -8,15 +8,15 @@
   </button>
 </div>
 <mat-grid-list cols="2" rowHeight="2:1" *ngIf="picturesId.length !== 0">
-  <ng-container *ngFor="let pictureId of picturesId;let i=index">
+  <ng-container *ngFor="let picture of pictures;let i=index">
     <mat-grid-tile>
-      <img [src]="'api/ProfilePictures/' + pictureId" ngxViewer width="100%" />
+      <img [src]="picture" ngxViewer />
     </mat-grid-tile>
     <mat-grid-tile>
-      <button matTooltip="Make this as Primary Photo" *ngIf="i!==0" class="actions" mat-raised-button color="accent" (click)="onPrimarySet(pictureId)">
+      <button matTooltip="Make this as Primary Photo" *ngIf="i!==0" class="actions" mat-icon-button color="accent" (click)="onPrimarySet(i)">
         <mat-icon>grade</mat-icon>
       </button>
-      <button mat-fab color="warn" (click)="deletePhoto(i)">
+      <button mat-icon-button color="warn" (click)="deletePhoto(i)">
         <mat-icon>delete</mat-icon>
       </button>
     </mat-grid-tile>

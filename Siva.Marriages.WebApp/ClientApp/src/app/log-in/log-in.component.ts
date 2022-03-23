@@ -1,10 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../shared/auth.service';
-import {routesConstants} from '../shared/routes.constants';
-import { UIService } from '../shared/UIService';
+import { AuthService, UIService } from '../shared';
 
 @Component({
   selector: 'app-log-in',
@@ -15,25 +12,26 @@ export class LogInComponent {
   public form: FormGroup;
   public hide = true;
 
-  constructor(private service: AuthService, private router: Router, private uiService:UIService) {
+  constructor(private service: AuthService, private route: ActivatedRoute, private router: Router, private uiService: UIService) {
     this.form = new FormGroup({
       userName: new FormControl('', [Validators.required]),
-      password: new FormControl('', [Validators.required]),
-      remember: new FormControl(false)
+      password: new FormControl('', [Validators.required])
     });
   }
 
   public async login(): Promise<any> {
-    try {
-      if (this.form.valid) {
-        await this.service.login(this.form.getRawValue());
-        await this.router.navigate([routesConstants.HOME]);
-      }
-    }
-    catch (excep) {
-      await this.router.navigate([routesConstants.LOGIN]);
-      this.uiService.showToast("InValid Credentials!");
-      throw excep;
+    if (this.form.valid) {
+      this.service.logIn(this.form.getRawValue())
+        .subscribe({
+          next: () => {
+            // get return url from route parameters or default to '/'
+            const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+            this.router.navigate([returnUrl]);
+          },
+          error: error => {
+            this.uiService.showErrorToast(error);
+          }
+        });
     }
   }
 }
