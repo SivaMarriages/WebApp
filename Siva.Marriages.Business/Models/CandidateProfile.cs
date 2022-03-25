@@ -44,6 +44,8 @@ namespace Siva.Marriages.Business.Models
         public string? Mother { get; set; } = string.Empty;
         [JsonPropertyName("siblings")]
         public List<SiblingsProfile> Siblings { get; set; } = new List<SiblingsProfile>();
+        [JsonPropertyName("referrer")]
+        public string? Referrer { get; set; } = string.Empty;
     }
 
     public class SiblingsProfile

@@ -18,7 +18,8 @@ export interface ProfileData {
   otherDetails: string,
   father: string,
   mother: string,
-  siblings: SiblingsProfile[]
+  siblings: SiblingsProfile[],
+  referrer: string
 }
 
 export interface ContactDetails {

@@ -59,6 +59,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
       location: ['']
     }),
     height: [''],
+    referrer:[''],
     otherDetails: [''],
     father: ['', Validators.required],
     mother: ['', Validators.required],
