@@ -8,6 +8,7 @@ import { UIService } from './';
 })
 export class ProfileService {
   private profile: CandidateProfile[] = [];
+  private cachedPictures:{id:string, pic:any}[] = [];
   constructor(private http: HttpClient, private uiService: UIService) {
   }
 
@@ -66,10 +67,17 @@ export class ProfileService {
   }
 
   public async GetPicture(id: string): Promise<any> {
+    for(let i = 0; i < this.cachedPictures.length; i++){
+      if(this.cachedPictures[i].id === id){
+        return this.cachedPictures[i].pic;
+      }
+    }
     const blob = await this.http.get('api/ProfilePictures/' + encodeURIComponent(id), {
       responseType: "blob"
     }).toPromise();
-    return await this.ConvertBlobToDataUri(blob);
+    let cachePic = {id:id, pic:await this.ConvertBlobToDataUri(blob)};
+    this.cachedPictures.push(cachePic);
+    return cachePic.pic;
   }
 
   public async MakePictureAsPrimary(id: string, pictureId: string): Promise<string[]> {
