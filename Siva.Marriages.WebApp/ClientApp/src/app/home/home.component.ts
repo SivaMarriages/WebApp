@@ -52,7 +52,8 @@ export class HomeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     try {
       this.uiService.showSpinner();
-      const promises = (await this.profileService.GetAllProfile(true)).map(async profile => {
+      const profiles = await this.profileService.GetAllProfile(true);
+      const promises = profiles.map(async profile => {
         const profileWithPicture: CandidateProfileWithPicture = <CandidateProfileWithPicture>profile;
         try {
           profileWithPicture.profilePic = await this.profileService.GetPicture(profile.picturesId[0]);
@@ -61,6 +62,7 @@ export class HomeComponent implements OnInit {
         }
         return profileWithPicture;
       });
+      this.profilesDataStr = profiles.map(profile => this.GetProfileStr(profile.data));
       const tempProfileWithPictures = await Promise.all(promises)
       this.profiles = tempProfileWithPictures;
       this.filterdProfiles = tempProfileWithPictures;
@@ -114,7 +116,11 @@ export class HomeComponent implements OnInit {
   }
 
   applyFilter() {
-    const filter = this.filterText.toLowerCase();
+    const filter = this.filterText.toLowerCase().trim();
+    if(filter === ""){
+      this.filterdProfiles = this.profiles;
+      return;
+    }
     this.filterdProfiles = [];
     for (let i = 0; i < this.profiles.length; i++) {
       if (this.profilesDataStr[i].includes(filter)) {
@@ -122,6 +128,19 @@ export class HomeComponent implements OnInit {
       }
     }
   }
+
+  private GetProfileStr(data: any): string {
+    let ret = "";
+    if (typeof data === "object") {
+      Object.values(data).map(val => {
+        ret += this.GetProfileStr(val);
+      });
+    } else {
+      ret += data.toLowerCase();
+    }
+    return ret;
+  }
+
 }
 
 interface CandidateProfileWithPicture extends CandidateProfile {

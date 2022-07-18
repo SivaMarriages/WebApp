@@ -4,8 +4,8 @@
   </button>
 </div>
 <mat-form-field style="width: 100%;">
-  <input matInput type="text" [(ngModel)]="filterText" placeholder="Search">
-  <button matSuffix mat-icon-button aria-label="search" (click)="applyFilter()">
+  <input matInput type="text" [(ngModel)]="filterText" placeholder="Search" (ngModelChange)="applyFilter()">
+  <button matSuffix mat-icon-button aria-label="search">
     <mat-icon>search</mat-icon>
   </button>
   <!-- <mat-icon matSuffix>search</mat-icon> -->
